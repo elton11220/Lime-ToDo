@@ -15,7 +15,7 @@ const Window: React.FC = () => {
         <Aside width="64px">
           <SideBar />
         </Aside>
-        <Content>
+        <Content style={{ borderLeft: '1px solid #f3f3f3' }}>
           <Outlet />
         </Content>
       </Layout>
