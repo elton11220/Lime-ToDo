@@ -27,12 +27,18 @@ const TitleBar: React.FC<TitleBarProps> = (props) => {
     };
   }, []);
   return (
-    <div
-      className={styles.container}
-      style={{ height: `${sysTitleBarHeight}px` }}
-    >
-      <div className={styles.title}>{title}</div>
-    </div>
+    <>
+      <div
+        className={styles.container}
+        style={{ height: `${sysTitleBarHeight}px` }}
+      >
+        <div className={styles.title}>{title}</div>
+      </div>
+      <div
+        className={styles.placeholder}
+        style={{ height: `${sysTitleBarHeight}px` }}
+      />
+    </>
   );
 };
 

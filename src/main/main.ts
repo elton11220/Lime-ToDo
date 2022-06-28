@@ -86,6 +86,8 @@ const createWindow = async () => {
     show: false,
     width: 1290,
     height: 730,
+    minHeight: 576,
+    minWidth: 400,
     titleBarOverlay: {
       color: '#fff',
       symbolColor: '#555',

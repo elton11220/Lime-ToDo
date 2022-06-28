@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   background-color: #fff;
-  position: relative;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -35,4 +35,8 @@
 :global(#close-window-btn:hover) {
   background-color: #ec4141;
   color: #fff;
+}
+
+.placeholder {
+  width: 100%;
 }
