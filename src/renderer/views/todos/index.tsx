@@ -11,6 +11,7 @@ import {
   DiscountIcon,
 } from 'tdesign-icons-react';
 import { connect, ConnectedProps } from 'react-redux';
+import styles from './style.module.scss';
 
 const { Aside, Content } = Layout;
 const { MenuItem, SubMenu, MenuGroup } = Menu;
@@ -94,7 +95,26 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
                     key={item.id}
                     icon={<ViewListIcon />}
                   >
-                    {item.title}
+                    <div className={styles.menuItem}>
+                      <div className={styles.title}>{item.title}</div>
+                      <div className={styles.indicators}>
+                        <div
+                          className={styles.color}
+                          style={{ backgroundColor: item?.color }}
+                        />
+                        <div
+                          className={styles.number}
+                          style={{
+                            color:
+                              active === item.id
+                                ? '#fff'
+                                : 'var(--td-text-color-primary)',
+                          }}
+                        >
+                          0
+                        </div>
+                      </div>
+                    </div>
                   </MenuItem>
                 );
               }
@@ -104,7 +124,26 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
                   key={child.id}
                   icon={<ViewListIcon />}
                 >
-                  {child.title}
+                  <div className={styles.menuItem} style={{ width: '132px' }}>
+                    <div className={styles.title}>{child.title}</div>
+                    <div className={styles.indicators}>
+                      <div
+                        className={styles.color}
+                        style={{ backgroundColor: child?.color }}
+                      />
+                      <div
+                        className={styles.number}
+                        style={{
+                          color:
+                            active === child.id
+                              ? '#fff'
+                              : 'var(--td-text-color-primary)',
+                        }}
+                      >
+                        0
+                      </div>
+                    </div>
+                  </div>
                 </MenuItem>
               ));
               return (
@@ -122,7 +161,26 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           <MenuGroup title="标签">
             {tags.map((item: TagItem) => (
               <MenuItem key={item.id} value={item.id} icon={<DiscountIcon />}>
-                {item.title}
+                <div className={styles.menuItem}>
+                  <div className={styles.title}>{item.title}</div>
+                  <div className={styles.indicators}>
+                    <div
+                      className={styles.color}
+                      style={{ backgroundColor: item?.color }}
+                    />
+                    <div
+                      className={styles.number}
+                      style={{
+                        color:
+                          active === item.id
+                            ? '#fff'
+                            : 'var(--td-text-color-primary)',
+                      }}
+                    >
+                      0
+                    </div>
+                  </div>
+                </div>
               </MenuItem>
             ))}
           </MenuGroup>
