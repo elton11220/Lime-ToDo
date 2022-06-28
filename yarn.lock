@@ -7605,11 +7605,6 @@ react-test-renderer@^18.1.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react-thunk@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/react-thunk/-/react-thunk-1.0.0.tgz#79813d47f31147e81aee841ed5e76a9e3eabc8b1"
-  integrity sha512-OhJ0AdnFASwN4qkQ62X2xCkVPPAKM12Ju7H8jxPt6q9gTwhIRlWuzlbg0RZqYPQ88MX/s5VEvYiTImBMJWspPQ==
-
 react-transition-group@~4.4.1:
   version "4.4.2"
   resolved "https://registry.npmmirror.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -7689,6 +7684,11 @@ redux-promise@^0.6.0:
   dependencies:
     flux-standard-action "^2.0.3"
     is-promise "^2.1.0"
+
+redux-thunk@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npmmirror.com/redux-thunk/-/redux-thunk-2.4.1.tgz#0dd8042cf47868f4b29699941de03c9301a75714"
+  integrity sha512-OOYGNY5Jy2TWvTL1KgAlVy6dcx3siPJ1wTq741EPyUKfn6W6nChdICjZwCd0p8AZBs5kWpZlbkXW2nE/zjUa+Q==
 
 redux@^4.2.0:
   version "4.2.0"
