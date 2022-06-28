@@ -1,0 +1,38 @@
+.container {
+  width: 100%;
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1px solid #f3f3f3;
+  z-index: 999;
+  -webkit-app-region: drag;
+  > .title {
+    color: #3d3d3d;
+    font-size: 13px;
+    font-weight: bold;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+  }
+  .control-btns {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-app-region: no-drag;
+    transition: all 0.3s ease;
+    &:hover {
+      background-color: rgba(160, 160, 160, 0.3);
+    }
+  }
+}
+
+:global(#close-window-btn:hover) {
+  background-color: #ec4141;
+  color: #fff;
+}
