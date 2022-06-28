@@ -17,6 +17,30 @@ declare global {
       close: () => void;
     };
   }
+  interface ListItem {
+    id: string;
+    title: string;
+    folder: boolean;
+    parent: string;
+    color: string;
+  }
+  interface TagItem {
+    id: string;
+    title: string;
+    color: string;
+  }
+  interface RenderListItem {
+    id: string;
+    title: string;
+    folder: false;
+    color: string;
+  }
+  interface RenderListItemFolder {
+    id: string;
+    title: string;
+    folder: true;
+    children: Array<RenderListItem>;
+  }
 }
 
 export {};
