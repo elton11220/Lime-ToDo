@@ -9,7 +9,9 @@ export default class ContextMenuBuilder {
   actionListener(event: IpcMainEvent, options: ActionListenerOptions): void {
     const { itemType, itemID } = options;
     if (itemType === 'tagItem') {
-      const menu = Menu.buildFromTemplate(this.buildTagItemTemplate(event, itemID));
+      const menu = Menu.buildFromTemplate(
+        this.buildTagItemTemplate(event, itemID)
+      );
       menu.popup({
         window: BrowserWindow.fromWebContents(event.sender) as BrowserWindow,
       });
