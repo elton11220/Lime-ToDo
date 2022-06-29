@@ -1,35 +1,32 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "description": "A todo list program",
   "keywords": [
     "electron",
     "boilerplate",
     "react",
     "typescript",
     "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "todo"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/elton11220/Lime-ToDo",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/elton11220/Lime-ToDo/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/elton11220/Lime-ToDo.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "elton11220",
+    "email": "jonesbak@outlook.com",
+    "url": "https://github.com/elton11220"
   },
   "contributors": [
     {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
+      "name": "elton11220",
+      "email": "jonesbak@outlook.com",
+      "url": "https://github.com/elton11220"
     }
   ],
   "main": "./src/main/main.ts",
@@ -190,8 +187,8 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "LimeToDo",
+    "appId": "com.elton11220.limetodo",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -252,9 +249,6 @@
       "owner": "electron-react-boilerplate",
       "repo": "electron-react-boilerplate"
     }
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",
