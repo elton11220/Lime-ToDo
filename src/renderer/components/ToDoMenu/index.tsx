@@ -58,8 +58,8 @@ interface ToDoMenuProps {
   onChange: (v: string) => void;
   tags: any;
   todos: any;
-  onDeleteTodoMenuItem: (itemId: unknown) => void;
-  onDeleteTagItem: (itemId: unknown) => void;
+  onDeleteTodoMenuItem: (itemId: any) => void;
+  onDeleteTagItem: (itemId: any) => void;
 }
 
 const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
