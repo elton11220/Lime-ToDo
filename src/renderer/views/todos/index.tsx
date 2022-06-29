@@ -29,6 +29,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
         // @ts-ignore
         dialog.hide();
       },
+      onClose: () => {
+        // @ts-ignore
+        dialog.hide();
+      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -42,6 +46,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
       showOverlay: false,
       onConfirm: () => {
         dispatch(deleteTodoMenu(itemId));
+        // @ts-ignore
+        dialog.hide();
+      },
+      onClose: () => {
         // @ts-ignore
         dialog.hide();
       },
