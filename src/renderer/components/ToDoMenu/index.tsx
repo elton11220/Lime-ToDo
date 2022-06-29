@@ -58,10 +58,19 @@ interface ToDoMenuProps {
   onChange: (v: string) => void;
   tags: any;
   todos: any;
+  onDeleteTodoMenuItem: (itemId: unknown) => void;
+  onDeleteTagItem: (itemId: unknown) => void;
 }
 
 const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
-  const { active, onChange, tags, todos } = props;
+  const {
+    active,
+    onChange,
+    tags,
+    todos,
+    onDeleteTagItem,
+    onDeleteTodoMenuItem,
+  } = props;
   const todoMenu = useMemo(() => resolveList(todos), [todos]);
   const showContextMenu = (e: any) => {
     e.preventDefault();
@@ -75,19 +84,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       itemID,
     });
   };
-  const deleteToDoMenuItem = (itemID: string) => {
-    console.log('deleteToDoMenuItem: ', itemID);
-  };
   useEffect(() => {
-    const deleteTagItemMenuListener = window.electron.ipcRenderer.on(
+    const deleteTagItemListener = window.electron.ipcRenderer.on(
+      'delete-tagItem-menu',
+      onDeleteTagItem
+    ) as () => void;
+    const deleteToDoMenuItemListener = window.electron.ipcRenderer.on(
       'delete-toDoMenuItem-menu',
-      (itemID) => {
-        console.log('deleteToDoMenuItem: ', itemID);
-      }
+      onDeleteTodoMenuItem
     ) as () => void;
     return () => {
-      deleteTagItemMenuListener();
+      deleteTagItemListener();
+      deleteToDoMenuItemListener();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div onContextMenu={showContextMenu}>
