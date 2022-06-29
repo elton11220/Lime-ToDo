@@ -1,0 +1,37 @@
+.menuItem {
+  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 3px;
+  > .title{
+    max-width: 115px;
+    margin-right: 8px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  > .indicators{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .color{
+      height: 5px;
+      width: 5px;
+      border-radius: 50%;
+    }
+    .number{
+      color: var(--td-text-color-primary);
+      width: 2em;
+      text-align: right;
+      font-size: 12px;
+    }
+  }
+}
+.identifier{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}

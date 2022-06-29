@@ -1,6 +1,9 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example' | 'windowMaximumChange';
+export type Channels =
+  | 'ipc-example'
+  | 'windowMaximumChange'
+  | 'show-context-menu';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
