@@ -2,7 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { Layout, DialogPlugin } from 'tdesign-react';
 import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import ToDoMenu from 'renderer/components/ToDoMenu';
-import { deleteTag, deleteTodoMenu } from 'renderer/redux/slice/dataReducer';
+import {
+  deleteTag,
+  deleteTodoMenu,
+  breakTodoMenuFolder,
+} from 'renderer/redux/slice/dataReducer';
 import styles from './style.module.scss';
 
 const { Aside, Content } = Layout;
@@ -56,6 +60,26 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const breakToDoMenuItemFolder = useCallback((itemId: string) => {
+    // @ts-ignore
+    const dialog = DialogPlugin.confirm({
+      header: '解散文件夹',
+      body: '解散文件夹后，文件夹中的清单将直接显示在侧边栏中',
+      confirmBtn: '确定',
+      cancelBtn: '关闭',
+      showOverlay: false,
+      onConfirm: () => {
+        dispatch(breakTodoMenuFolder(itemId));
+        // @ts-ignore
+        dialog.hide();
+      },
+      onClose: () => {
+        // @ts-ignore
+        dialog.hide();
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Layout style={{ height: '100%' }}>
       <Aside>
@@ -66,6 +90,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           todos={todos}
           onDeleteTagItem={deleteTagItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
+          onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
       </Aside>
       <Content>

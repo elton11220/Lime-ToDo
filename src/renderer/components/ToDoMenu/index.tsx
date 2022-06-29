@@ -60,6 +60,7 @@ interface ToDoMenuProps {
   todos: any;
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
+  onBreakTodoMenuItemFolder: (itemId: any) => void;
 }
 
 const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
@@ -70,6 +71,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     todos,
     onDeleteTagItem,
     onDeleteTodoMenuItem,
+    onBreakTodoMenuItemFolder,
   } = props;
   const todoMenu = useMemo(() => resolveList(todos), [todos]);
   const showContextMenu = (e: any) => {
@@ -93,9 +95,14 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       'delete-toDoMenuItem-menu',
       onDeleteTodoMenuItem
     ) as () => void;
+    const breakToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
+      'break-toDoMenuItemFolder-menu',
+      onBreakTodoMenuItemFolder
+    ) as () => void;
     return () => {
       deleteTagItemListener();
       deleteToDoMenuItemListener();
+      breakToDoMenuItemFolderListener();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -187,7 +194,18 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
               <SubMenu
                 value={item.id}
                 key={item.id}
-                title={item.title}
+                title={
+                  <>
+                    <div
+                      className={styles.identifier}
+                      itemID={item.id}
+                      itemType="toDoMenuItemFolder"
+                    />
+                    <div className={styles.menuItem} style={{ width: '140px' }}>
+                      <div className={styles.title}>{item.title}</div>
+                    </div>
+                  </>
+                }
                 icon={<FolderOpenIcon />}
               >
                 {children}

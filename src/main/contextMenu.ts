@@ -22,6 +22,13 @@ export default class ContextMenuBuilder {
       menu.popup({
         window: BrowserWindow.fromWebContents(event.sender) as BrowserWindow,
       });
+    } else if (itemType === 'toDoMenuItemFolder') {
+      const menu = Menu.buildFromTemplate(
+        this.buildToDoMenuItemFolderTemplate(event, itemID)
+      );
+      menu.popup({
+        window: BrowserWindow.fromWebContents(event.sender) as BrowserWindow,
+      });
     }
   }
 
@@ -42,6 +49,31 @@ export default class ContextMenuBuilder {
         label: '删除',
         click: () => {
           event.reply('delete-toDoMenuItem-menu', itemID);
+        },
+      },
+    ];
+    return template;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  buildToDoMenuItemFolderTemplate(event: IpcMainEvent, itemID: string) {
+    const template = [
+      {
+        label: '添加清单',
+        click: () => {
+          event.reply('add-toDoMenuItemFolder-menu', itemID);
+        },
+      },
+      {
+        label: '编辑',
+        click: () => {
+          event.reply('edit-toDoMenuItemFolder-menu', itemID);
+        },
+      },
+      {
+        label: '解散',
+        click: () => {
+          event.reply('break-toDoMenuItemFolder-menu', itemID);
         },
       },
     ];

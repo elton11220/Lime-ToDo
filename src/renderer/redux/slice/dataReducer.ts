@@ -58,10 +58,24 @@ const dataReducer = createSlice({
       state.tags = state.tags.filter((item) => item.id !== action.payload);
     },
     deleteTodoMenu(state, action: PayloadAction<string>) {
-      state.todoMenu = state.todoMenu.filter((item) => item.id !== action.payload);
-    }
+      state.todoMenu = state.todoMenu.filter(
+        (item) => item.id !== action.payload
+      );
+    },
+    breakTodoMenuFolder(state, action: PayloadAction<string>) {
+      const innerItems = state.todoMenu
+        .filter((item) => item.parent === action.payload)
+        .map((item) => ({ ...item, folder: false, parent: '' }));
+      state.todoMenu = [
+        ...state.todoMenu.filter(
+          (item) => item.parent !== action.payload && item.id !== action.payload
+        ),
+        ...innerItems,
+      ];
+    },
   },
 });
 
 export default dataReducer.reducer;
-export const {deleteTag, deleteTodoMenu} = dataReducer.actions;
+export const { deleteTag, deleteTodoMenu, breakTodoMenuFolder } =
+  dataReducer.actions;
