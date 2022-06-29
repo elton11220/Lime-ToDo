@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 const namespace = 'dataReducer';
 
@@ -52,7 +53,15 @@ const initialState: InitialState = {
 const dataReducer = createSlice({
   name: namespace,
   initialState,
-  reducers: {},
+  reducers: {
+    deleteTag(state, action: PayloadAction<string>) {
+      state.tags = state.tags.filter((item) => item.id !== action.payload);
+    },
+    deleteTodoMenu(state, action: PayloadAction<string>) {
+      state.todoMenu = state.todoMenu.filter((item) => item.id !== action.payload);
+    }
+  },
 });
 
 export default dataReducer.reducer;
+export const {deleteTag, deleteTodoMenu} = dataReducer.actions;
