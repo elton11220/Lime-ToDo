@@ -10,7 +10,7 @@ import {
   ViewListIcon,
   DiscountIcon,
 } from 'tdesign-icons-react';
-
+import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
 
 const { MenuItem, SubMenu, MenuGroup } = Menu;
@@ -106,8 +106,13 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const { height: sysTitleBarHeight } = useTitleBarAreaRect();
   return (
-    <div onContextMenu={showContextMenu}>
+    <div
+      onContextMenu={showContextMenu}
+      className={styles.container}
+      style={{ height: `calc(100vh - ${sysTitleBarHeight}px)` }}
+    >
       <Menu
         value={active}
         onChange={(v: any) => onChange(v)}
