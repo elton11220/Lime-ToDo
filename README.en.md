@@ -1,12 +1,20 @@
 ## Introduction
 Lime ToDo is a cross platform to-do list program developed with React, Electron and Typescript, including to-do list, calendar view, cloud synchronization and other functions.
 
+[README.zh.md](https://gitee.com/elton11220/Lime-ToDo/blob/master/README.md)
+
+[GitHub Repo](https://github.com/elton11220/Lime-ToDo)
+|
+[Gitee Repo (Faster in China)](https://gitee.com/elton11220/Lime-ToDo)
+
 ## Dev plan
 
 - [ ] Windows client development
 - [ ] Daily attendance
 - [ ] Automatic update
 - [ ] Spotlight
+- [ ] Responsive styling for windows of different sizes
+- [ ] i18n
 - [ ] macOS client adaptation
 - [ ] Cloud synchronization
 - [ ] Privatized cloud synchronization
