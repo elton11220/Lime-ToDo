@@ -9,6 +9,7 @@ import {
   FolderOpenIcon,
   ViewListIcon,
   DiscountIcon,
+  EllipsisIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
@@ -86,6 +87,12 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       itemID,
     });
   };
+  const showContextMenuByClick = (itemType: string, itemID: string) => {
+    window.electron.ipcRenderer.sendMessage('show-context-menu', {
+      itemType,
+      itemID,
+    });
+  };
   useEffect(() => {
     const deleteTagItemListener = window.electron.ipcRenderer.on(
       'delete-tagItem-menu',
@@ -142,7 +149,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                     className={styles.identifier}
                     itemID={item.id}
                     itemType="toDoMenuItem"
-                  />
+                  >
+                    <EllipsisIcon
+                      className={styles.moreBtn}
+                      style={{
+                        color:
+                          active === item.id
+                            ? '#fff'
+                            : 'var(--td-text-color-primary)',
+                      }}
+                      onClick={() => {
+                        showContextMenuByClick('toDoMenuItem', item.id);
+                      }}
+                    />
+                  </div>
                   <div className={styles.menuItem}>
                     <div className={styles.title}>{item.title}</div>
                     <div className={styles.indicators}>
@@ -172,7 +192,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                   className={styles.identifier}
                   itemID={child.id}
                   itemType="toDoMenuItem"
-                />
+                >
+                  <EllipsisIcon
+                    className={styles.moreBtn}
+                    style={{
+                      color:
+                        active === child.id
+                          ? '#fff'
+                          : 'var(--td-text-color-primary)',
+                    }}
+                    onClick={() => {
+                      showContextMenuByClick('toDoMenuItem', child.id);
+                    }}
+                  />
+                </div>
                 <div className={styles.menuItem} style={{ width: '132px' }}>
                   <div className={styles.title}>{child.title}</div>
                   <div className={styles.indicators}>
@@ -205,7 +238,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                       className={styles.identifier}
                       itemID={item.id}
                       itemType="toDoMenuItemFolder"
-                    />
+                    >
+                      <EllipsisIcon
+                        className={styles.moreBtn}
+                        style={{
+                          color:
+                            active === item.id
+                              ? '#fff'
+                              : 'var(--td-text-color-primary)',
+                        }}
+                        onClick={() => {
+                          showContextMenuByClick('toDoMenuItemFolder', item.id);
+                        }}
+                      />
+                    </div>
                     <div className={styles.menuItem} style={{ width: '140px' }}>
                       <div className={styles.title}>{item.title}</div>
                     </div>
@@ -225,7 +271,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                 className={styles.identifier}
                 itemID={item.id}
                 itemType="tagItem"
-              />
+              >
+                <EllipsisIcon
+                  className={styles.moreBtn}
+                  style={{
+                    color:
+                      active === item.id
+                        ? '#fff'
+                        : 'var(--td-text-color-primary)',
+                  }}
+                  onClick={() => {
+                    showContextMenuByClick('tagItem', item.id);
+                  }}
+                />
+              </div>
               <div className={styles.menuItem}>
                 <div className={styles.title}>{item.title}</div>
                 <div className={styles.indicators}>

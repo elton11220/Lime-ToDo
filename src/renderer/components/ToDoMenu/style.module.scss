@@ -34,6 +34,23 @@
   height: 100%;
   top: 0;
   left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 15px;
+  z-index: 1;
+  > .moreBtn {
+    opacity: 0;
+  }
+  &:hover > .moreBtn{
+    opacity: 1;
+  }
+  &:hover + .menuItem > .indicators{
+    opacity: 0;
+  }
+}
+.identifier[itemType="toDoMenuItemFolder"]{
+  padding: 0 32px;
 }
 .container{
   overflow-y: scroll;
