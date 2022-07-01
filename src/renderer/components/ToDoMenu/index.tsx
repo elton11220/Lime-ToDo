@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, memo } from 'react';
+import React, { useEffect, useMemo, memo, useState } from 'react';
 import { Menu } from 'tdesign-react';
+import type { MenuValue } from 'tdesign-react';
 import {
   TimeIcon,
   BrowseIcon,
@@ -75,6 +76,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onBreakTodoMenuItemFolder,
   } = props;
   const todoMenu = useMemo(() => resolveList(todos), [todos]);
+  const [expanded, setExpanded] = useState<MenuValue[]>([]);
   const showContextMenu = (e: any) => {
     e.preventDefault();
     const itemID = e.target.getAttribute('itemid');
@@ -124,6 +126,8 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         value={active}
         onChange={(v: any) => onChange(v)}
         defaultValue="new"
+        expanded={expanded}
+        onExpand={setExpanded}
       >
         <MenuItem value="today" icon={<BrowseIcon />}>
           今天
@@ -243,7 +247,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                         className={styles.moreBtn}
                         style={{
                           color:
-                            active === item.id
+                            !expanded.includes(item.id) &&
+                            todos.find((todo: ListItem) => todo.id === active)
+                              ?.parent === item.id
                               ? '#fff'
                               : 'var(--td-text-color-primary)',
                         }}
