@@ -56,3 +56,23 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }
+.menuGroupTitleContainer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  & > .icon{
+    opacity: 0;
+    transition: all .1s linear;
+    border-radius: 5px;
+    &:hover {
+      background-color: var(--td-bg-color-secondarycontainer-hover);
+    }
+    &:active {
+      background-color: transparent;
+    }
+  }
+  &:hover .icon{
+    opacity: 1;
+  }
+}

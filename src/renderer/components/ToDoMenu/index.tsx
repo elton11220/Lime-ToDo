@@ -11,6 +11,7 @@ import {
   ViewListIcon,
   DiscountIcon,
   EllipsisIcon,
+  AddIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
@@ -144,7 +145,18 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         <MenuItem value="trash" icon={<ClearIcon />}>
           垃圾桶
         </MenuItem>
-        <MenuGroup title="清单">
+        <MenuGroup
+          title={
+            <div className={styles.menuGroupTitleContainer}>
+              <span>清单</span>
+              <AddIcon
+                size="large"
+                style={{ color: 'var(--td-text-color-placeholder)' }}
+                className={styles.icon}
+              />
+            </div>
+          }
+        >
           {todoMenu.map((item) => {
             if (!item.folder) {
               return (
@@ -270,7 +282,18 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
             );
           })}
         </MenuGroup>
-        <MenuGroup title="标签">
+        <MenuGroup
+          title={
+            <div className={styles.menuGroupTitleContainer}>
+              <span>标签</span>
+              <AddIcon
+                size="large"
+                style={{ color: 'var(--td-text-color-placeholder)' }}
+                className={styles.icon}
+              />
+            </div>
+          }
+        >
           {tags.map((item: TagItem) => (
             <MenuItem key={item.id} value={item.id} icon={<DiscountIcon />}>
               <div
