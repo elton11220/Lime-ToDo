@@ -87,7 +87,11 @@ const ColorPicker: React.FC<ColorPickerProps> = (props) => {
           style={{ width: `${size}px`, height: `${size}px` }}
           className={styles.container}
           onClick={() => {
-            onVisibleChange(true);
+            if (popUpVisible) {
+              onVisibleChange(false);
+            } else {
+              onVisibleChange(true);
+            }
           }}
         >
           <div
