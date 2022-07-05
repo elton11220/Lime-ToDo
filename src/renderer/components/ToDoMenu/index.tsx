@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { Dialog, Form, Input, Menu } from 'tdesign-react';
+import { Dialog, Form, Input, Menu, Select } from 'tdesign-react';
 import type { MenuValue } from 'tdesign-react';
 import {
   TimeIcon,
@@ -26,6 +26,7 @@ import ColorPicker from '../ColorPicker';
 
 const { MenuItem, SubMenu, MenuGroup } = Menu;
 const { FormItem } = Form;
+const { Option } = Select;
 
 const resolveList: (
   data: ListItem[]
@@ -145,8 +146,53 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const getRandomColorId = useCallback(() => {
     return Math.floor(Math.random() * colors.length);
   }, [colors]);
+  const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
+    useState<boolean>(false);
+  const todoMenuFolders = useMemo(
+    () => [
+      <Option label="无" value="0" />,
+      ...todos
+        .filter((item: ListItem) => item.folder === true)
+        .map((item: ListItem) => <Option label={item.title} value={item.id} />),
+      <Option value="-1" disabled>
+        <Input size="small" placeholder="按回车添加文件夹" />
+      </Option>,
+    ],
+    [todos]
+  );
   return (
     <>
+      <Dialog
+        visible={addTodoMenuItemDialogShow}
+        header="添加菜单"
+        confirmBtn="保存"
+        showOverlay={false}
+        destroyOnClose
+        onClose={() => {
+          setAddTodoMenuItemDialogShow(false);
+        }}
+      >
+        <Form style={{ marginTop: '20px' }}>
+          <FormItem
+            label="名称"
+            name="title"
+            rules={[
+              { message: '清单名称不能为空', type: 'error', required: true },
+            ]}
+          >
+            <Input placeholder="名称" />
+          </FormItem>
+          <FormItem label="文件夹" name="folder" initialData={0}>
+            <Select>{...todoMenuFolders}</Select>
+          </FormItem>
+          <FormItem label="颜色" name="color" initialData={getRandomColorId}>
+            {
+              // @ts-ignore
+              React.createElement(ColorPicker, { colors })
+            }
+          </FormItem>
+        </Form>
+      </Dialog>
       <Dialog
         visible={addTagItemDialogShow}
         header="添加标签"
@@ -213,6 +259,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                   className={`${styles.icon} ${
                     todoMenu.length <= 0 ? styles.active : null
                   }`}
+                  onClick={() => {
+                    setAddTodoMenuItemDialogShow(true);
+                  }}
                 />
               </div>
             }
