@@ -142,6 +142,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       setAddTagItemDialogShow(false);
     }
   }, [onAddTagItem]);
+  const getRandomColorId = useCallback(() => {
+    return Math.floor(Math.random() * colors.length);
+  }, [colors]);
   return (
     <>
       <Dialog
@@ -165,7 +168,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           >
             <Input placeholder="标签" />
           </FormItem>
-          <FormItem label="颜色" name="color" initialData={-1}>
+          <FormItem label="颜色" name="color" initialData={getRandomColorId}>
             {
               // @ts-ignore
               React.createElement(ColorPicker, { colors })
