@@ -139,6 +139,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         id: new Date().getTime(),
         ...onAddTagItemDialogForm.current.getFieldsValue(['color', 'title']),
       });
+      setAddTagItemDialogShow(false);
     }
   }, [onAddTagItem]);
   return (
@@ -390,7 +391,12 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                   <div className={styles.indicators}>
                     <div
                       className={styles.color}
-                      style={{ backgroundColor: item?.color }}
+                      style={{
+                        backgroundColor:
+                          item?.color === -1
+                            ? 'transparent'
+                            : colors[item.color],
+                      }}
                     />
                     <div
                       className={styles.number}

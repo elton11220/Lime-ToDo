@@ -27,7 +27,7 @@ declare global {
   interface TagItem {
     id: string;
     title: string;
-    color: string;
+    color: number;
   }
   interface RenderListItem {
     id: string;

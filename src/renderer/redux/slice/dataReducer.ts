@@ -54,19 +54,7 @@ const initialState: InitialState = {
     "parent": "",
     "color": "#ff0000"
   }],
-  tags: [{
-    "id": "0",
-    "title": "重要",
-    "color": "#409eff"
-  },{
-    "id": "1",
-    "title": "英语四级",
-    "color": "#ccc"
-  },{
-    "id": "2",
-    "title": "专业课",
-    "color": "#0000ff"
-  },],
+  tags: [],
 };
 
 const dataReducer = createSlice({
@@ -75,6 +63,9 @@ const dataReducer = createSlice({
   reducers: {
     deleteTag(state, action: PayloadAction<string>) {
       state.tags = state.tags.filter((item) => item.id !== action.payload);
+    },
+    addTag(state, action: PayloadAction<TagItem>) {
+      state.tags.push(action.payload)
     },
     deleteTodoMenu(state, action: PayloadAction<string>) {
       state.todoMenu = state.todoMenu.filter(
@@ -96,5 +87,5 @@ const dataReducer = createSlice({
 });
 
 export default dataReducer.reducer;
-export const { deleteTag, deleteTodoMenu, breakTodoMenuFolder } =
+export const { deleteTag, addTag, deleteTodoMenu, breakTodoMenuFolder } =
   dataReducer.actions;

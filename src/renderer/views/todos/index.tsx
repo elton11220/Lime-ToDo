@@ -4,6 +4,7 @@ import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import ToDoMenu from 'renderer/components/ToDoMenu';
 import {
   deleteTag,
+  addTag,
   deleteTodoMenu,
   breakTodoMenuFolder,
 } from 'renderer/redux/slice/dataReducer';
@@ -41,6 +42,12 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const addTagItem = useCallback(
+    (item: TagItem) => {
+      dispatch(addTag(item));
+    },
+    [dispatch]
+  );
   const deleteTodoMenuItem = useCallback((itemId: string) => {
     // @ts-ignore
     const dialog = DialogPlugin.confirm({
@@ -91,6 +98,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           todos={todos}
           colors={colors}
           onDeleteTagItem={deleteTagItem}
+          onAddTagItem={addTagItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
