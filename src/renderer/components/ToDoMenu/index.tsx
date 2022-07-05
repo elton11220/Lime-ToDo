@@ -133,11 +133,11 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const [addTagItemDialogShow, setAddTagItemDialogShow] =
     useState<boolean>(false);
   const onAddTagItemDialogForm = useRef<HTMLFormElement>();
-  const onAddTagItemDialogConfirm = useCallback(() => {
-    if (onAddTagItemDialogForm.current?.validate()) {
+  const onAddTagItemDialogConfirm = useCallback(async () => {
+    if ((await onAddTagItemDialogForm.current?.validate()) === true) {
       onAddTagItem({
         id: new Date().getTime(),
-        ...onAddTagItemDialogForm.current.getFieldsValue(['color', 'title']),
+        ...onAddTagItemDialogForm.current?.getFieldsValue(['color', 'title']),
       });
       setAddTagItemDialogShow(false);
     }
