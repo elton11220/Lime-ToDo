@@ -70,6 +70,7 @@ interface ToDoMenuProps {
   onChange: (v: string) => void;
   tags: any;
   todos: any;
+  colors: string[];
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
@@ -82,6 +83,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onChange,
     tags,
     todos,
+    colors,
     onDeleteTagItem,
     onDeleteTodoMenuItem,
     onBreakTodoMenuItemFolder,
@@ -163,7 +165,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
             <Input placeholder="标签" />
           </FormItem>
           <FormItem label="颜色" name="color" initialData={-1}>
-            {React.createElement(ColorPicker)}
+            {
+              // @ts-ignore
+              React.createElement(ColorPicker, { colors })
+            }
           </FormItem>
         </Form>
       </Dialog>

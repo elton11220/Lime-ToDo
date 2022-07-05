@@ -14,11 +14,12 @@ const { Aside, Content } = Layout;
 const connector = connect((state: any) => ({
   todos: state.dataReducer.todoMenu,
   tags: state.dataReducer.tags,
+  colors: state.dataReducer.colors,
 }));
 
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('');
-  const { todos, tags } = props;
+  const { todos, tags, colors } = props;
   const dispatch = useDispatch();
   const deleteTagItem = useCallback((itemId: string) => {
     // @ts-ignore
@@ -88,6 +89,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onChange={setActive}
           tags={tags}
           todos={todos}
+          colors={colors}
           onDeleteTagItem={deleteTagItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
