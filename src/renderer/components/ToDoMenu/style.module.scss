@@ -71,6 +71,9 @@
     &:active {
       background-color: transparent;
     }
+    &.active {
+      opacity: 1;
+    }
   }
   &:hover .icon{
     opacity: 1;

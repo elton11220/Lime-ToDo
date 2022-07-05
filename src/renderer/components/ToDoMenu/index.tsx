@@ -207,7 +207,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                 <AddIcon
                   size="large"
                   style={{ color: 'var(--td-text-color-placeholder)' }}
-                  className={styles.icon}
+                  className={`${styles.icon} ${
+                    todoMenu.length <= 0 ? styles.active : null
+                  }`}
                 />
               </div>
             }
@@ -358,7 +360,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                 <AddIcon
                   size="large"
                   style={{ color: 'var(--td-text-color-placeholder)' }}
-                  className={styles.icon}
+                  className={`${styles.icon} ${
+                    tags.length <= 0 ? styles.active : null
+                  }`}
                   onClick={() => {
                     setAddTagItemDialogShow(true);
                   }}
