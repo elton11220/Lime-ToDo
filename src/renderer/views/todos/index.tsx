@@ -6,6 +6,7 @@ import {
   deleteTag,
   addTag,
   deleteTodoMenu,
+  addTodoMenuFolder,
   breakTodoMenuFolder,
 } from 'renderer/redux/slice/dataReducer';
 import styles from './style.module.scss';
@@ -68,6 +69,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const addToDoMenuItemFolder = useCallback((item: ListItem) => {
+    dispatch(addTodoMenuFolder(item));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const breakToDoMenuItemFolder = useCallback((itemId: string) => {
     // @ts-ignore
     const dialog = DialogPlugin.confirm({
@@ -100,6 +105,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onDeleteTagItem={deleteTagItem}
           onAddTagItem={addTagItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
+          onAddTodoMenuItemFolder={addToDoMenuItemFolder}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
       </Aside>

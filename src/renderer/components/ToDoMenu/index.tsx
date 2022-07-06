@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { Dialog, Form, Input, Menu, Select } from 'tdesign-react';
-import type { MenuValue } from 'tdesign-react';
+import type { MenuValue, InputValue } from 'tdesign-react';
 import {
   TimeIcon,
   BrowseIcon,
@@ -19,10 +19,12 @@ import {
   DiscountIcon,
   EllipsisIcon,
   AddIcon,
+  ChevronDownIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
+import HrDivider from '../HrDivider';
 
 const { MenuItem, SubMenu, MenuGroup } = Menu;
 const { FormItem } = Form;
@@ -74,6 +76,7 @@ interface ToDoMenuProps {
   colors: string[];
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
+  onAddTodoMenuItemFolder: (item: ListItem) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
   onAddTagItem: (item: TagItem) => void;
 }
@@ -87,6 +90,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     colors,
     onDeleteTagItem,
     onDeleteTodoMenuItem,
+    onAddTodoMenuItemFolder,
     onBreakTodoMenuItemFolder,
     onAddTagItem,
   } = props;
@@ -146,19 +150,56 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const getRandomColorId = useCallback(() => {
     return Math.floor(Math.random() * colors.length);
   }, [colors]);
+  const addTodoMenuItemFolderForm = useRef<HTMLFormElement>();
+  const [addTodoMenuItemFolderInputValue, setAddTodoMenuItemFolderInputValue] =
+    useState<string>();
+  const [
+    addTodoMenuItemFolderPopUpVisible,
+    setAddTodoMenuItemFolderPopUpVisible,
+  ] = useState<boolean>(false);
+  const addTodoMenuItemFolder = useCallback(
+    (value: InputValue) => {
+      if (value !== '') {
+        const id = new Date().getTime().toString();
+        onAddTodoMenuItemFolder({
+          id,
+          title: value as string,
+          folder: true,
+          parent: '',
+          color: '',
+        });
+        setAddTodoMenuItemFolderInputValue(() => '');
+        addTodoMenuItemFolderForm.current?.setFields([
+          { name: 'folder', value: id },
+        ]);
+        setAddTodoMenuItemFolderPopUpVisible(false);
+      }
+    },
+    [onAddTodoMenuItemFolder]
+  );
   const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
     useState<boolean>(false);
   const todoMenuFolders = useMemo(
     () => [
+      <Option value="-1" disabled>
+        <Input
+          size="small"
+          maxlength={25}
+          placeholder="按回车添加文件夹"
+          onEnter={addTodoMenuItemFolder}
+          value={addTodoMenuItemFolderInputValue}
+          onChange={(value) => {
+            setAddTodoMenuItemFolderInputValue(value as string);
+          }}
+        />
+      </Option>,
+      <HrDivider top={10} bottom={15} />,
       <Option label="无" value="0" />,
       ...todos
         .filter((item: ListItem) => item.folder === true)
         .map((item: ListItem) => <Option label={item.title} value={item.id} />),
-      <Option value="-1" disabled>
-        <Input size="small" placeholder="按回车添加文件夹" />
-      </Option>,
     ],
-    [todos]
+    [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, todos]
   );
   return (
     <>
@@ -172,7 +213,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           setAddTodoMenuItemDialogShow(false);
         }}
       >
-        <Form style={{ marginTop: '20px' }}>
+        <Form style={{ marginTop: '20px' }} ref={addTodoMenuItemFolderForm}>
           <FormItem
             label="名称"
             name="title"
@@ -182,8 +223,26 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           >
             <Input placeholder="名称" />
           </FormItem>
-          <FormItem label="文件夹" name="folder" initialData={0}>
-            <Select>{...todoMenuFolders}</Select>
+          <FormItem label="文件夹" name="folder" initialData="0">
+            <Select
+              showArrow={false}
+              selectInputProps={{
+                popupVisible: addTodoMenuItemFolderPopUpVisible,
+                onPopupVisibleChange: () => {
+                  setAddTodoMenuItemFolderPopUpVisible((state) => !state);
+                },
+              }}
+              onChange={() => {
+                setAddTodoMenuItemFolderPopUpVisible((state) => !state);
+              }}
+            >
+              {...todoMenuFolders}
+            </Select>
+            <ChevronDownIcon
+              className={`${styles.selectIcon} ${
+                addTodoMenuItemFolderPopUpVisible ? styles.rotate : ''
+              }`}
+            />
           </FormItem>
           <FormItem label="颜色" name="color" initialData={getRandomColorId}>
             {

@@ -30,25 +30,25 @@ const initialState: InitialState = {
     '#dad873', '#8cffda', '#ffb2e6', '#d972ff',
   ],
   todoMenu: [{
-    "id": "0",
+    "id": "12312412412",
     "title": "学习计划22",
     "folder": true,
     "parent": "",
     "color": ""
   },{
-    "id": "1",
+    "id": "13124515",
     "title": "做题",
     "folder": false,
-    "parent": "0",
+    "parent": "12312412412",
     "color": "#409eff"
   },{
-    "id": "2",
+    "id": "12431243123",
     "title": "读书",
     "folder": false,
-    "parent": "0",
+    "parent": "12312412412",
     "color": "#ffaa00"
   },{
-    "id": "3",
+    "id": "907890",
     "title": "独立的",
     "folder": false,
     "parent": "",
@@ -72,6 +72,9 @@ const dataReducer = createSlice({
         (item) => item.id !== action.payload
       );
     },
+    addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
+      state.todoMenu.push(action.payload);
+    },
     breakTodoMenuFolder(state, action: PayloadAction<string>) {
       const innerItems = state.todoMenu
         .filter((item) => item.parent === action.payload)
@@ -87,5 +90,5 @@ const dataReducer = createSlice({
 });
 
 export default dataReducer.reducer;
-export const { deleteTag, addTag, deleteTodoMenu, breakTodoMenuFolder } =
+export const { deleteTag, addTag, deleteTodoMenu, breakTodoMenuFolder, addTodoMenuFolder } =
   dataReducer.actions;
