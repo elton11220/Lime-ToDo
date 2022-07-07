@@ -171,7 +171,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           color: -1,
         });
         setAddTodoMenuItemFolderInputValue(() => '');
-        addTodoMenuItemForm.current?.setFields([{ name: 'folder', value: id }]);
+        addTodoMenuItemForm.current?.setFields([{ name: 'parent', value: id }]);
         setAddTodoMenuItemFolderPopUpVisible(false);
       }
     },
