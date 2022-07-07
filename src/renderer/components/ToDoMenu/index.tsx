@@ -143,7 +143,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const onAddTagItemDialogConfirm = useCallback(async () => {
     if ((await onAddTagItemDialogForm.current?.validate()) === true) {
       onAddTagItem({
-        id: new Date().getTime(),
+        id: new Date().getTime().toString(),
         ...onAddTagItemDialogForm.current?.getFieldsValue(['color', 'title']),
       });
       setAddTagItemDialogShow(false);
@@ -182,7 +182,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
     if ((await addTodoMenuItemForm.current?.validate()) === true) {
       onAddTodoMenuItem({
-        id: new Date().getTime(),
+        id: new Date().getTime().toString(),
         ...addTodoMenuItemForm.current?.getFieldsValue([
           'title',
           'parent',
