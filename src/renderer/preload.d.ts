@@ -22,7 +22,7 @@ declare global {
     title: string;
     folder: boolean;
     parent: string;
-    color: string;
+    color: number;
   }
   interface TagItem {
     id: string;
@@ -33,7 +33,7 @@ declare global {
     id: string;
     title: string;
     folder: false;
-    color: string;
+    color: number;
   }
   interface RenderListItemFolder {
     id: string;

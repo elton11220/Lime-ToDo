@@ -74,6 +74,7 @@ interface ToDoMenuProps {
   tags: any;
   todos: any;
   colors: string[];
+  onAddTodoMenuItem: (item: ListItem) => void;
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
@@ -89,6 +90,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     todos,
     colors,
     onDeleteTagItem,
+    onAddTodoMenuItem,
     onDeleteTodoMenuItem,
     onAddTodoMenuItemFolder,
     onBreakTodoMenuItemFolder,
@@ -150,7 +152,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const getRandomColorId = useCallback(() => {
     return Math.floor(Math.random() * colors.length);
   }, [colors]);
-  const addTodoMenuItemFolderForm = useRef<HTMLFormElement>();
+  const addTodoMenuItemForm = useRef<HTMLFormElement>();
   const [addTodoMenuItemFolderInputValue, setAddTodoMenuItemFolderInputValue] =
     useState<string>();
   const [
@@ -166,12 +168,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           title: value as string,
           folder: true,
           parent: '',
-          color: '',
+          color: -1,
         });
         setAddTodoMenuItemFolderInputValue(() => '');
-        addTodoMenuItemFolderForm.current?.setFields([
-          { name: 'folder', value: id },
-        ]);
+        addTodoMenuItemForm.current?.setFields([{ name: 'folder', value: id }]);
         setAddTodoMenuItemFolderPopUpVisible(false);
       }
     },
@@ -179,6 +179,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   );
   const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
     useState<boolean>(false);
+  const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
+    if ((await addTodoMenuItemForm.current?.validate()) === true) {
+      onAddTodoMenuItem({
+        id: new Date().getTime(),
+        ...addTodoMenuItemForm.current?.getFieldsValue([
+          'title',
+          'parent',
+          'color',
+        ]),
+        folder: false,
+      });
+      setAddTodoMenuItemDialogShow(false);
+    }
+  }, [onAddTodoMenuItem]);
   const todoMenuFolders = useMemo(
     () => [
       <Option value="-1" disabled>
@@ -194,7 +208,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         />
       </Option>,
       <HrDivider top={10} bottom={15} />,
-      <Option label="无" value="0" />,
+      <Option label="无" value="" />,
       ...todos
         .filter((item: ListItem) => item.folder === true)
         .map((item: ListItem) => <Option label={item.title} value={item.id} />),
@@ -212,8 +226,9 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         onClose={() => {
           setAddTodoMenuItemDialogShow(false);
         }}
+        onConfirm={onAddTodoMenuItemDialogConfirm}
       >
-        <Form style={{ marginTop: '20px' }} ref={addTodoMenuItemFolderForm}>
+        <Form style={{ marginTop: '20px' }} ref={addTodoMenuItemForm}>
           <FormItem
             label="名称"
             name="title"
@@ -223,7 +238,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           >
             <Input placeholder="名称" />
           </FormItem>
-          <FormItem label="文件夹" name="folder" initialData="0">
+          <FormItem label="文件夹" name="parent" initialData="">
             <Select
               showArrow={false}
               selectInputProps={{
@@ -356,7 +371,12 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                       <div className={styles.indicators}>
                         <div
                           className={styles.color}
-                          style={{ backgroundColor: item?.color }}
+                          style={{
+                            backgroundColor:
+                              item?.color === -1
+                                ? 'transparent'
+                                : colors[item.color],
+                          }}
                         />
                         <div
                           className={styles.number}
@@ -403,7 +423,12 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                     <div className={styles.indicators}>
                       <div
                         className={styles.color}
-                        style={{ backgroundColor: child?.color }}
+                        style={{
+                          backgroundColor:
+                            child?.color === -1
+                              ? 'transparent'
+                              : colors[child.color],
+                        }}
                       />
                       <div
                         className={styles.number}

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
@@ -29,31 +28,7 @@ const initialState: InitialState = {
     // eslint-disable-next-line prettier/prettier
     '#dad873', '#8cffda', '#ffb2e6', '#d972ff',
   ],
-  todoMenu: [{
-    "id": "12312412412",
-    "title": "学习计划22",
-    "folder": true,
-    "parent": "",
-    "color": ""
-  },{
-    "id": "13124515",
-    "title": "做题",
-    "folder": false,
-    "parent": "12312412412",
-    "color": "#409eff"
-  },{
-    "id": "12431243123",
-    "title": "读书",
-    "folder": false,
-    "parent": "12312412412",
-    "color": "#ffaa00"
-  },{
-    "id": "907890",
-    "title": "独立的",
-    "folder": false,
-    "parent": "",
-    "color": "#ff0000"
-  }],
+  todoMenu: [],
   tags: [],
 };
 
@@ -65,7 +40,10 @@ const dataReducer = createSlice({
       state.tags = state.tags.filter((item) => item.id !== action.payload);
     },
     addTag(state, action: PayloadAction<TagItem>) {
-      state.tags.push(action.payload)
+      state.tags.push(action.payload);
+    },
+    addTodoMenu(state, action: PayloadAction<ListItem>) {
+      state.todoMenu.push(action.payload);
     },
     deleteTodoMenu(state, action: PayloadAction<string>) {
       state.todoMenu = state.todoMenu.filter(
@@ -90,5 +68,11 @@ const dataReducer = createSlice({
 });
 
 export default dataReducer.reducer;
-export const { deleteTag, addTag, deleteTodoMenu, breakTodoMenuFolder, addTodoMenuFolder } =
-  dataReducer.actions;
+export const {
+  deleteTag,
+  addTag,
+  addTodoMenu,
+  deleteTodoMenu,
+  breakTodoMenuFolder,
+  addTodoMenuFolder,
+} = dataReducer.actions;

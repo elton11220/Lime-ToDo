@@ -8,6 +8,7 @@ import {
   deleteTodoMenu,
   addTodoMenuFolder,
   breakTodoMenuFolder,
+  addTodoMenu,
 } from 'renderer/redux/slice/dataReducer';
 import styles from './style.module.scss';
 
@@ -49,6 +50,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     },
     [dispatch]
   );
+  const addTodoMenuItem = useCallback((item: ListItem) => {
+    dispatch(addTodoMenu(item));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const deleteTodoMenuItem = useCallback((itemId: string) => {
     // @ts-ignore
     const dialog = DialogPlugin.confirm({
@@ -104,6 +109,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           colors={colors}
           onDeleteTagItem={deleteTagItem}
           onAddTagItem={addTagItem}
+          onAddTodoMenuItem={addTodoMenuItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onAddTodoMenuItemFolder={addToDoMenuItemFolder}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
