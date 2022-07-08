@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { Dialog, Form, Input, Menu, Select } from 'tdesign-react';
+import { Dialog, DialogPlugin, Form, Input, Menu, Select } from 'tdesign-react';
 import type { MenuValue, InputValue } from 'tdesign-react';
 import {
   TimeIcon,
@@ -119,15 +119,69 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   useEffect(() => {
     const deleteTagItemListener = window.electron.ipcRenderer.on(
       'delete-tagItem-menu',
-      onDeleteTagItem
+      (tagId) => {
+        // @ts-ignore
+        const dialog = DialogPlugin.confirm({
+          header: '删除标签',
+          body: '删除后，标签将会从任务中移除',
+          confirmBtn: '确定',
+          cancelBtn: '关闭',
+          showOverlay: false,
+          onConfirm: () => {
+            onDeleteTagItem(tagId);
+            // @ts-ignore
+            dialog.hide();
+          },
+          onClose: () => {
+            // @ts-ignore
+            dialog.hide();
+          },
+        });
+      }
     ) as () => void;
     const deleteToDoMenuItemListener = window.electron.ipcRenderer.on(
       'delete-toDoMenuItem-menu',
-      onDeleteTodoMenuItem
+      (itemId) => {
+        // @ts-ignore
+        const dialog = DialogPlugin.confirm({
+          header: '删除清单',
+          body: '删除清单会删除清单内的所有任务，确定要删除吗？',
+          confirmBtn: '确定',
+          cancelBtn: '关闭',
+          showOverlay: false,
+          onConfirm: () => {
+            onDeleteTodoMenuItem(itemId);
+            // @ts-ignore
+            dialog.hide();
+          },
+          onClose: () => {
+            // @ts-ignore
+            dialog.hide();
+          },
+        });
+      }
     ) as () => void;
     const breakToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
       'break-toDoMenuItemFolder-menu',
-      onBreakTodoMenuItemFolder
+      (itemId) => {
+        // @ts-ignore
+        const dialog = DialogPlugin.confirm({
+          header: '解散文件夹',
+          body: '解散文件夹后，文件夹中的清单将直接显示在侧边栏中',
+          confirmBtn: '确定',
+          cancelBtn: '关闭',
+          showOverlay: false,
+          onConfirm: () => {
+            onBreakTodoMenuItemFolder(itemId);
+            // @ts-ignore
+            dialog.hide();
+          },
+          onClose: () => {
+            // @ts-ignore
+            dialog.hide();
+          },
+        });
+      }
     ) as () => void;
     return () => {
       deleteTagItemListener();
