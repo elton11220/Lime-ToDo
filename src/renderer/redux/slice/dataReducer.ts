@@ -42,6 +42,10 @@ const dataReducer = createSlice({
     addTag(state, action: PayloadAction<TagItem>) {
       state.tags.push(action.payload);
     },
+    editTag(state, action: PayloadAction<TagItem>) {
+      const idx = state.tags.findIndex((item) => item.id === action.payload.id);
+      state.tags[idx] = action.payload;
+    },
     addTodoMenu(state, action: PayloadAction<ListItem>) {
       state.todoMenu.push(action.payload);
     },
@@ -71,6 +75,7 @@ export default dataReducer.reducer;
 export const {
   deleteTag,
   addTag,
+  editTag,
   addTodoMenu,
   deleteTodoMenu,
   breakTodoMenuFolder,

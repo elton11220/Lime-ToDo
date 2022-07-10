@@ -25,6 +25,7 @@ import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
+import EditTagItemDialog from '../EditTagItemDialog';
 
 const { MenuItem, SubMenu, MenuGroup } = Menu;
 const { FormItem } = Form;
@@ -80,6 +81,7 @@ interface ToDoMenuProps {
   onAddTodoMenuItemFolder: (item: ListItem) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
   onAddTagItem: (item: TagItem) => void;
+  onEditTagItem: (item: TagItem) => void;
 }
 
 const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
@@ -95,6 +97,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onAddTodoMenuItemFolder,
     onBreakTodoMenuItemFolder,
     onAddTagItem,
+    onEditTagItem,
   } = props;
   const todoMenu = useMemo(() => resolveList(todos), [todos]);
   const [expanded, setExpanded] = useState<MenuValue[]>([]);
@@ -116,7 +119,20 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       itemID,
     });
   };
+  const [editTagItemDialogState, setEditTagItemDialogState] = useState<{
+    show?: boolean;
+    id?: string;
+  }>({
+    show: false,
+    id: '',
+  });
   useEffect(() => {
+    const editTagItemListener = window.electron.ipcRenderer.on(
+      'edit-tagItem-menu',
+      (tagId) => {
+        setEditTagItemDialogState({ show: true, id: tagId as string });
+      }
+    ) as () => void;
     const deleteTagItemListener = window.electron.ipcRenderer.on(
       'delete-tagItem-menu',
       (tagId) => {
@@ -184,6 +200,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       }
     ) as () => void;
     return () => {
+      editTagItemListener();
       deleteTagItemListener();
       deleteToDoMenuItemListener();
       breakToDoMenuItemFolderListener();
@@ -271,6 +288,13 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   );
   return (
     <>
+      <EditTagItemDialog
+        tags={tags}
+        state={editTagItemDialogState}
+        setState={setEditTagItemDialogState}
+        colors={colors}
+        onConfirm={onEditTagItem}
+      />
       <Dialog
         visible={addTodoMenuItemDialogShow}
         header="添加菜单"
