@@ -54,14 +54,14 @@ const dataReducer = createSlice({
         (item) => item.id !== action.payload
       );
     },
-    addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
-      state.todoMenu.push(action.payload);
-    },
-    editTodoMenuFolder(state, action: PayloadAction<ListItem>) {
+    editTodoMenu(state, action: PayloadAction<ListItem>) {
       const idx = state.todoMenu.findIndex(
         (item) => item.id === action.payload.id
       );
       state.todoMenu[idx] = action.payload;
+    },
+    addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
+      state.todoMenu.push(action.payload);
     },
     breakTodoMenuFolder(state, action: PayloadAction<string>) {
       const innerItems = state.todoMenu
@@ -83,8 +83,8 @@ export const {
   addTag,
   editTag,
   addTodoMenu,
+  editTodoMenu,
   deleteTodoMenu,
   breakTodoMenuFolder,
-  editTodoMenuFolder,
   addTodoMenuFolder,
 } = dataReducer.actions;

@@ -77,10 +77,10 @@ interface ToDoMenuProps {
   todos: any;
   colors: string[];
   onAddTodoMenuItem: (item: ListItem) => void;
+  onEditTodoMenuItem: (item: ListItem) => void;
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
-  onEditTodoMenuItemFolder: (item: ListItem) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
   onAddTagItem: (item: TagItem) => void;
   onEditTagItem: (item: TagItem) => void;
@@ -95,10 +95,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     colors,
     onDeleteTagItem,
     onAddTodoMenuItem,
+    onEditTodoMenuItem,
     onDeleteTodoMenuItem,
     onAddTodoMenuItemFolder,
     onBreakTodoMenuItemFolder,
-    onEditTodoMenuItemFolder,
     onAddTagItem,
     onEditTagItem,
   } = props;
@@ -149,7 +149,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   );
   const editTodoMenuItemFolderFormConfirm = useCallback(async () => {
     if ((await editTodoMenuItemFolderForm.current?.validate()) === true) {
-      onEditTodoMenuItemFolder({
+      onEditTodoMenuItem({
         ...todos.find(
           (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
         ),
@@ -160,7 +160,42 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         show: false,
       });
     }
-  }, [todos, onEditTodoMenuItemFolder, editTodoMenuItemFolderDialogState.id]);
+  }, [onEditTodoMenuItem, todos, editTodoMenuItemFolderDialogState.id]);
+  //
+  const [editTodoMenuItemDialogState, setEditTodoMenuItemDialogState] =
+    useState<{
+      show: boolean;
+      id?: string;
+    }>({
+      show: false,
+      id: '',
+    });
+  const editTodoMenuItemForm = useRef<HTMLFormElement>();
+  const editTodoMenuItemFormDefaultValue = useMemo(
+    () =>
+      todos.find(
+        (item: ListItem) => item.id === editTodoMenuItemDialogState.id
+      ) || {},
+    [editTodoMenuItemDialogState.id, todos]
+  );
+  const editTodoMenuItemFormConfirm = useCallback(async () => {
+    if ((await editTodoMenuItemForm.current?.validate()) === true) {
+      const idx = todos.findIndex(
+        (item: ListItem) => item.id === editTodoMenuItemDialogState.id
+      );
+      onEditTodoMenuItem({
+        ...todos[idx],
+        ...editTodoMenuItemForm.current?.getFieldsValue([
+          'title',
+          'color',
+          'parent',
+        ]),
+      });
+      setEditTodoMenuItemDialogState({
+        show: false,
+      });
+    }
+  }, [onEditTodoMenuItem, todos, editTodoMenuItemDialogState.id]);
   useEffect(() => {
     const editTagItemListener = window.electron.ipcRenderer.on(
       'edit-tagItem-menu',
@@ -212,6 +247,15 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         });
       }
     ) as () => void;
+    const editToDoMenuItemListener = window.electron.ipcRenderer.on(
+      'edit-toDoMenuItem-menu',
+      (itemId) => {
+        setEditTodoMenuItemDialogState({
+          id: itemId as string,
+          show: true,
+        });
+      }
+    ) as () => void;
     const breakToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
       'break-toDoMenuItemFolder-menu',
       (itemId) => {
@@ -247,6 +291,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       editTagItemListener();
       deleteTagItemListener();
       deleteToDoMenuItemListener();
+      editToDoMenuItemListener();
       breakToDoMenuItemFolderListener();
       editToDoMenuItemFolderListener();
     };
@@ -275,6 +320,8 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     addTodoMenuItemFolderPopUpVisible,
     setAddTodoMenuItemFolderPopUpVisible,
   ] = useState<boolean>(false);
+  const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
+    useState<boolean>(false);
   const addTodoMenuItemFolder = useCallback(
     (value: InputValue) => {
       if (value !== '') {
@@ -287,14 +334,24 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           color: -1,
         });
         setAddTodoMenuItemFolderInputValue(() => '');
-        addTodoMenuItemForm.current?.setFields([{ name: 'parent', value: id }]);
+        if (editTodoMenuItemDialogState.show) {
+          editTodoMenuItemForm.current?.setFields([
+            { name: 'parent', value: id },
+          ]);
+        } else if (addTodoMenuItemDialogShow) {
+          addTodoMenuItemForm.current?.setFields([
+            { name: 'parent', value: id },
+          ]);
+        }
         setAddTodoMenuItemFolderPopUpVisible(false);
       }
     },
-    [onAddTodoMenuItemFolder]
+    [
+      addTodoMenuItemDialogShow,
+      editTodoMenuItemDialogState.show,
+      onAddTodoMenuItemFolder,
+    ]
   );
-  const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
-    useState<boolean>(false);
   const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
     if ((await addTodoMenuItemForm.current?.validate()) === true) {
       onAddTodoMenuItem({
@@ -340,6 +397,67 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         colors={colors}
         onConfirm={onEditTagItem}
       />
+      <Dialog
+        visible={editTodoMenuItemDialogState.show}
+        header="编辑菜单"
+        confirmBtn="保存"
+        showOverlay={false}
+        destroyOnClose
+        onClose={() => {
+          setEditTodoMenuItemDialogState({
+            show: false,
+          });
+        }}
+        onConfirm={editTodoMenuItemFormConfirm}
+      >
+        <Form style={{ marginTop: '20px' }} ref={editTodoMenuItemForm}>
+          <FormItem
+            label="名称"
+            name="title"
+            rules={[
+              { message: '清单名称不能为空', type: 'error', required: true },
+            ]}
+            initialData={editTodoMenuItemFormDefaultValue.title}
+          >
+            <Input placeholder="名称" />
+          </FormItem>
+          <FormItem
+            label="文件夹"
+            name="parent"
+            initialData={editTodoMenuItemFormDefaultValue.parent}
+          >
+            <Select
+              showArrow={false}
+              selectInputProps={{
+                popupVisible: addTodoMenuItemFolderPopUpVisible,
+                onPopupVisibleChange: () => {
+                  setAddTodoMenuItemFolderPopUpVisible((state) => !state);
+                },
+              }}
+              onChange={() => {
+                setAddTodoMenuItemFolderPopUpVisible((state) => !state);
+              }}
+            >
+              {...todoMenuFolders}
+            </Select>
+            <ChevronDownIcon
+              className={`${styles.selectIcon} ${
+                addTodoMenuItemFolderPopUpVisible ? styles.rotate : ''
+              }`}
+            />
+          </FormItem>
+          <FormItem
+            label="颜色"
+            name="color"
+            initialData={editTodoMenuItemFormDefaultValue.color}
+          >
+            {
+              // @ts-ignore
+              React.createElement(ColorPicker, { colors })
+            }
+          </FormItem>
+        </Form>
+      </Dialog>
       <Dialog
         visible={editTodoMenuItemFolderDialogState.show}
         header="编辑文件夹"

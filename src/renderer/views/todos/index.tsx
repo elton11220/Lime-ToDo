@@ -10,7 +10,7 @@ import {
   breakTodoMenuFolder,
   addTodoMenu,
   editTag,
-  editTodoMenuFolder,
+  editTodoMenu,
 } from 'renderer/redux/slice/dataReducer';
 import styles from './style.module.scss';
 
@@ -44,6 +44,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     dispatch(addTodoMenu(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const editTodoMenuItem = useCallback((item: ListItem) => {
+    dispatch(editTodoMenu(item));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const deleteTodoMenuItem = useCallback((itemId: string) => {
     dispatch(deleteTodoMenu(itemId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,10 +58,6 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   }, []);
   const breakToDoMenuItemFolder = useCallback((itemId: string) => {
     dispatch(breakTodoMenuFolder(itemId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const editToDoMenuItemFolder = useCallback((item: ListItem) => {
-    dispatch(editTodoMenuFolder(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -73,9 +73,9 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onAddTagItem={addTagItem}
           onEditTagItem={editTagItem}
           onAddTodoMenuItem={addTodoMenuItem}
+          onEditTodoMenuItem={editTodoMenuItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onAddTodoMenuItemFolder={addToDoMenuItemFolder}
-          onEditTodoMenuItemFolder={editToDoMenuItemFolder}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
       </Aside>
