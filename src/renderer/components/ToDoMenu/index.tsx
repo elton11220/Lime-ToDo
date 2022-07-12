@@ -26,7 +26,6 @@ import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
-import EditTagItemDialog from '../EditTagItemDialog';
 
 const { MenuItem, SubMenu, MenuGroup } = Menu;
 const { FormItem } = Form;
@@ -122,13 +121,33 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       itemID,
     });
   };
+  //
   const [editTagItemDialogState, setEditTagItemDialogState] = useState<{
-    show?: boolean;
+    show: boolean;
     id?: string;
   }>({
     show: false,
     id: '',
   });
+  const editTagItemForm = useRef<HTMLFormElement>();
+  const editTagItemFormDefaultValue = useMemo(
+    () =>
+      tags.find((item: ListItem) => item.id === editTagItemDialogState.id) ||
+      {},
+    [editTagItemDialogState.id, tags]
+  );
+  const editTagItemFormConfirm = useCallback(async () => {
+    if ((await editTagItemForm.current?.validate()) === true) {
+      onEditTagItem({
+        ...tags.find((item: TagItem) => item.id === editTagItemDialogState.id),
+        ...editTagItemForm.current?.getFieldsValue(['title', 'color']),
+      });
+      setEditTagItemDialogState({
+        show: false,
+      });
+    }
+  }, [onEditTagItem, tags, editTagItemDialogState.id]);
+  //
   const [
     editTodoMenuItemFolderDialogState,
     setEditTodoMenuItemFolderDialogState,
@@ -390,13 +409,47 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   );
   return (
     <>
-      <EditTagItemDialog
-        tags={tags}
-        state={editTagItemDialogState}
-        setState={setEditTagItemDialogState}
-        colors={colors}
-        onConfirm={onEditTagItem}
-      />
+      <Dialog
+        visible={editTagItemDialogState.show}
+        header="编辑标签"
+        confirmBtn="保存"
+        showOverlay={false}
+        destroyOnClose
+        onClose={() => {
+          setEditTagItemDialogState({
+            show: false,
+          });
+        }}
+        onConfirm={editTagItemFormConfirm}
+      >
+        <Form
+          ref={(node) => {
+            editTagItemForm.current = node;
+          }}
+          style={{ margin: '10px 0' }}
+        >
+          <FormItem
+            label="名称"
+            name="title"
+            rules={[
+              { message: '标签名称不能为空', type: 'error', required: true },
+            ]}
+            initialData={editTagItemFormDefaultValue.title}
+          >
+            <Input placeholder="标签" />
+          </FormItem>
+          <FormItem
+            label="颜色"
+            name="color"
+            initialData={editTagItemFormDefaultValue.color}
+          >
+            {
+              // @ts-ignore
+              React.createElement(ColorPicker, { colors })
+            }
+          </FormItem>
+        </Form>
+      </Dialog>
       <Dialog
         visible={editTodoMenuItemDialogState.show}
         header="编辑菜单"
