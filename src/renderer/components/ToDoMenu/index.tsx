@@ -20,6 +20,7 @@ import {
   EllipsisIcon,
   AddIcon,
   ChevronDownIcon,
+  FolderIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import styles from './style.module.scss';
@@ -79,6 +80,7 @@ interface ToDoMenuProps {
   onDeleteTodoMenuItem: (itemId: any) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
+  onEditTodoMenuItemFolder: (item: ListItem) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
   onAddTagItem: (item: TagItem) => void;
   onEditTagItem: (item: TagItem) => void;
@@ -96,6 +98,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onDeleteTodoMenuItem,
     onAddTodoMenuItemFolder,
     onBreakTodoMenuItemFolder,
+    onEditTodoMenuItemFolder,
     onAddTagItem,
     onEditTagItem,
   } = props;
@@ -126,6 +129,38 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     show: false,
     id: '',
   });
+  const [
+    editTodoMenuItemFolderDialogState,
+    setEditTodoMenuItemFolderDialogState,
+  ] = useState<{
+    show: boolean;
+    id?: string;
+  }>({
+    show: false,
+    id: '',
+  });
+  const editTodoMenuItemFolderForm = useRef<HTMLFormElement>();
+  const editTodoMenuItemFolderFormDefaultValue = useMemo(
+    () =>
+      todos.find(
+        (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
+      )?.title,
+    [editTodoMenuItemFolderDialogState.id, todos]
+  );
+  const editTodoMenuItemFolderFormConfirm = useCallback(async () => {
+    if ((await editTodoMenuItemFolderForm.current?.validate()) === true) {
+      onEditTodoMenuItemFolder({
+        ...todos.find(
+          (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
+        ),
+        title: editTodoMenuItemFolderForm.current?.getFieldsValue(['title'])
+          ?.title,
+      });
+      setEditTodoMenuItemFolderDialogState({
+        show: false,
+      });
+    }
+  }, [todos, onEditTodoMenuItemFolder, editTodoMenuItemFolderDialogState.id]);
   useEffect(() => {
     const editTagItemListener = window.electron.ipcRenderer.on(
       'edit-tagItem-menu',
@@ -199,11 +234,21 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         });
       }
     ) as () => void;
+    const editToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
+      'edit-toDoMenuItemFolder-menu',
+      (itemId) => {
+        setEditTodoMenuItemFolderDialogState({
+          id: itemId as string,
+          show: true,
+        });
+      }
+    ) as () => void;
     return () => {
       editTagItemListener();
       deleteTagItemListener();
       deleteToDoMenuItemListener();
       breakToDoMenuItemFolderListener();
+      editToDoMenuItemFolderListener();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -295,6 +340,36 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         colors={colors}
         onConfirm={onEditTagItem}
       />
+      <Dialog
+        visible={editTodoMenuItemFolderDialogState.show}
+        header="编辑文件夹"
+        confirmBtn="保存"
+        showOverlay={false}
+        destroyOnClose
+        onClose={() => {
+          setEditTodoMenuItemFolderDialogState({
+            show: false,
+          });
+        }}
+        onConfirm={editTodoMenuItemFolderFormConfirm}
+      >
+        <Form
+          ref={(node) => {
+            editTodoMenuItemFolderForm.current = node;
+          }}
+          style={{ margin: '10px 0' }}
+        >
+          <FormItem
+            name="title"
+            rules={[
+              { message: '文件夹名称不能为空', type: 'error', required: true },
+            ]}
+            initialData={editTodoMenuItemFolderFormDefaultValue}
+          >
+            <Input prefixIcon={<FolderIcon />} placeholder="名称" />
+          </FormItem>
+        </Form>
+      </Dialog>
       <Dialog
         visible={addTodoMenuItemDialogShow}
         header="添加菜单"

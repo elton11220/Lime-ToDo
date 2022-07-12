@@ -10,6 +10,7 @@ import {
   breakTodoMenuFolder,
   addTodoMenu,
   editTag,
+  editTodoMenuFolder,
 } from 'renderer/redux/slice/dataReducer';
 import styles from './style.module.scss';
 
@@ -55,6 +56,10 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     dispatch(breakTodoMenuFolder(itemId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const editToDoMenuItemFolder = useCallback((item: ListItem) => {
+    dispatch(editTodoMenuFolder(item));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Layout style={{ height: '100%' }}>
       <Aside>
@@ -70,6 +75,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onAddTodoMenuItem={addTodoMenuItem}
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onAddTodoMenuItemFolder={addToDoMenuItemFolder}
+          onEditTodoMenuItemFolder={editToDoMenuItemFolder}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
       </Aside>
