@@ -23,6 +23,7 @@ import {
   FolderIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
+import { flatToTree } from 'renderer/utils/menuUtils';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
@@ -30,44 +31,6 @@ import HrDivider from '../HrDivider';
 const { MenuItem, SubMenu, MenuGroup } = Menu;
 const { FormItem } = Form;
 const { Option } = Select;
-
-const resolveList: (
-  data: ListItem[]
-) => Array<RenderListItem | RenderListItemFolder> = (data: Array<ListItem>) => {
-  // Convert the todo data list from a database format to a renderable format
-  if (data instanceof Array) {
-    const newArr: Array<RenderListItem | RenderListItemFolder> = [];
-    data.forEach((value) => {
-      if (value.folder) {
-        newArr.push({
-          id: value.id,
-          title: value.title,
-          children: [],
-          folder: true,
-        });
-      } else if (value.parent !== '') {
-        const index = newArr.findIndex((val) => val.id === value.parent);
-        if (index !== -1) {
-          (newArr[index] as RenderListItemFolder).children.push({
-            id: value.id,
-            title: value.title,
-            color: value.color,
-            folder: false,
-          });
-        }
-      } else {
-        newArr.push({
-          id: value.id,
-          title: value.title,
-          color: value.color,
-          folder: false,
-        });
-      }
-    });
-    return newArr;
-  }
-  return [];
-};
 
 interface ToDoMenuProps {
   active: string;
@@ -101,7 +64,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onAddTagItem,
     onEditTagItem,
   } = props;
-  const todoMenu = useMemo(() => resolveList(todos), [todos]);
+  const todoMenu = useMemo(() => flatToTree(todos), [todos]);
   const [expanded, setExpanded] = useState<MenuValue[]>([]);
   const showContextMenu = (e: any) => {
     e.preventDefault();
