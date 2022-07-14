@@ -178,6 +178,97 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       });
     }
   }, [onEditTodoMenuItem, todos, editTodoMenuItemDialogState.id]);
+  const { height: sysTitleBarHeight } = useTitleBarAreaRect();
+  const [addTagItemDialogShow, setAddTagItemDialogShow] =
+    useState<boolean>(false);
+  const onAddTagItemDialogForm = useRef<HTMLFormElement>();
+  const onAddTagItemDialogConfirm = useCallback(async () => {
+    if ((await onAddTagItemDialogForm.current?.validate()) === true) {
+      onAddTagItem({
+        id: new Date().getTime().toString(),
+        ...onAddTagItemDialogForm.current?.getFieldsValue(['color', 'title']),
+      });
+      setAddTagItemDialogShow(false);
+    }
+  }, [onAddTagItem]);
+  const getRandomColorId = useCallback(() => {
+    return Math.floor(Math.random() * colors.length);
+  }, [colors]);
+  const addTodoMenuItemForm = useRef<HTMLFormElement>();
+  const [addTodoMenuItemFolderInputValue, setAddTodoMenuItemFolderInputValue] =
+    useState<string>();
+  const [
+    addTodoMenuItemFolderPopUpVisible,
+    setAddTodoMenuItemFolderPopUpVisible,
+  ] = useState<boolean>(false);
+  const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
+    useState<boolean>(false);
+  const addTodoMenuItemFolder = useCallback(
+    (value: InputValue) => {
+      if (value !== '') {
+        const id = new Date().getTime().toString();
+        onAddTodoMenuItemFolder({
+          id,
+          title: value as string,
+          folder: true,
+          parent: '',
+          color: -1,
+        });
+        setAddTodoMenuItemFolderInputValue(() => '');
+        if (editTodoMenuItemDialogState.show) {
+          editTodoMenuItemForm.current?.setFields([
+            { name: 'parent', value: id },
+          ]);
+        } else if (addTodoMenuItemDialogShow) {
+          addTodoMenuItemForm.current?.setFields([
+            { name: 'parent', value: id },
+          ]);
+        }
+        setAddTodoMenuItemFolderPopUpVisible(false);
+      }
+    },
+    [
+      addTodoMenuItemDialogShow,
+      editTodoMenuItemDialogState.show,
+      onAddTodoMenuItemFolder,
+    ]
+  );
+  const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
+    if ((await addTodoMenuItemForm.current?.validate()) === true) {
+      onAddTodoMenuItem({
+        id: new Date().getTime().toString(),
+        ...addTodoMenuItemForm.current?.getFieldsValue([
+          'title',
+          'parent',
+          'color',
+        ]),
+        folder: false,
+      });
+      setAddTodoMenuItemDialogShow(false);
+    }
+  }, [onAddTodoMenuItem]);
+  const todoMenuFolders = useMemo(
+    () => [
+      <Option value="-1" disabled>
+        <Input
+          size="small"
+          maxlength={25}
+          placeholder="按回车添加文件夹"
+          onEnter={addTodoMenuItemFolder}
+          value={addTodoMenuItemFolderInputValue}
+          onChange={(value) => {
+            setAddTodoMenuItemFolderInputValue(value as string);
+          }}
+        />
+      </Option>,
+      <HrDivider top={10} bottom={15} />,
+      <Option label="无" value="" />,
+      ...todos
+        .filter((item: ListItem) => item.folder === true)
+        .map((item: ListItem) => <Option label={item.title} value={item.id} />),
+    ],
+    [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, todos]
+  );
   useEffect(() => {
     const editTagItemListener = window.electron.ipcRenderer.on(
       'edit-tagItem-menu',
@@ -279,97 +370,6 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { height: sysTitleBarHeight } = useTitleBarAreaRect();
-  const [addTagItemDialogShow, setAddTagItemDialogShow] =
-    useState<boolean>(false);
-  const onAddTagItemDialogForm = useRef<HTMLFormElement>();
-  const onAddTagItemDialogConfirm = useCallback(async () => {
-    if ((await onAddTagItemDialogForm.current?.validate()) === true) {
-      onAddTagItem({
-        id: new Date().getTime().toString(),
-        ...onAddTagItemDialogForm.current?.getFieldsValue(['color', 'title']),
-      });
-      setAddTagItemDialogShow(false);
-    }
-  }, [onAddTagItem]);
-  const getRandomColorId = useCallback(() => {
-    return Math.floor(Math.random() * colors.length);
-  }, [colors]);
-  const addTodoMenuItemForm = useRef<HTMLFormElement>();
-  const [addTodoMenuItemFolderInputValue, setAddTodoMenuItemFolderInputValue] =
-    useState<string>();
-  const [
-    addTodoMenuItemFolderPopUpVisible,
-    setAddTodoMenuItemFolderPopUpVisible,
-  ] = useState<boolean>(false);
-  const [addTodoMenuItemDialogShow, setAddTodoMenuItemDialogShow] =
-    useState<boolean>(false);
-  const addTodoMenuItemFolder = useCallback(
-    (value: InputValue) => {
-      if (value !== '') {
-        const id = new Date().getTime().toString();
-        onAddTodoMenuItemFolder({
-          id,
-          title: value as string,
-          folder: true,
-          parent: '',
-          color: -1,
-        });
-        setAddTodoMenuItemFolderInputValue(() => '');
-        if (editTodoMenuItemDialogState.show) {
-          editTodoMenuItemForm.current?.setFields([
-            { name: 'parent', value: id },
-          ]);
-        } else if (addTodoMenuItemDialogShow) {
-          addTodoMenuItemForm.current?.setFields([
-            { name: 'parent', value: id },
-          ]);
-        }
-        setAddTodoMenuItemFolderPopUpVisible(false);
-      }
-    },
-    [
-      addTodoMenuItemDialogShow,
-      editTodoMenuItemDialogState.show,
-      onAddTodoMenuItemFolder,
-    ]
-  );
-  const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
-    if ((await addTodoMenuItemForm.current?.validate()) === true) {
-      onAddTodoMenuItem({
-        id: new Date().getTime().toString(),
-        ...addTodoMenuItemForm.current?.getFieldsValue([
-          'title',
-          'parent',
-          'color',
-        ]),
-        folder: false,
-      });
-      setAddTodoMenuItemDialogShow(false);
-    }
-  }, [onAddTodoMenuItem]);
-  const todoMenuFolders = useMemo(
-    () => [
-      <Option value="-1" disabled>
-        <Input
-          size="small"
-          maxlength={25}
-          placeholder="按回车添加文件夹"
-          onEnter={addTodoMenuItemFolder}
-          value={addTodoMenuItemFolderInputValue}
-          onChange={(value) => {
-            setAddTodoMenuItemFolderInputValue(value as string);
-          }}
-        />
-      </Option>,
-      <HrDivider top={10} bottom={15} />,
-      <Option label="无" value="" />,
-      ...todos
-        .filter((item: ListItem) => item.folder === true)
-        .map((item: ListItem) => <Option label={item.title} value={item.id} />),
-    ],
-    [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, todos]
-  );
   return (
     <>
       <Dialog
