@@ -198,6 +198,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const [addTodoMenuItemFolderInputValue, setAddTodoMenuItemFolderInputValue] =
     useState<string>();
   const [
+    addTodoMenuItemFormDefaultFolder,
+    setAddTodoMenuItemFormDefaultFolder,
+  ] = useState<string>('');
+  const [
     addTodoMenuItemFolderPopUpVisible,
     setAddTodoMenuItemFolderPopUpVisible,
   ] = useState<boolean>(false);
@@ -245,6 +249,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         folder: false,
       });
       setAddTodoMenuItemDialogShow(false);
+      setAddTodoMenuItemFormDefaultFolder('');
     }
   }, [onAddTodoMenuItem]);
   const todoMenuFolders = useMemo(
@@ -360,6 +365,13 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         });
       }
     ) as () => void;
+    const addToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
+      'add-toDoMenuItemFolder-menu',
+      (itemId) => {
+        setAddTodoMenuItemFormDefaultFolder(itemId as string);
+        setAddTodoMenuItemDialogShow(true);
+      }
+    ) as () => void;
     return () => {
       editTagItemListener();
       deleteTagItemListener();
@@ -367,6 +379,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       editToDoMenuItemListener();
       breakToDoMenuItemFolderListener();
       editToDoMenuItemFolderListener();
+      addToDoMenuItemFolderListener();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -512,6 +525,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
         destroyOnClose
         onClose={() => {
           setAddTodoMenuItemDialogShow(false);
+          setAddTodoMenuItemFormDefaultFolder('');
         }}
         onConfirm={onAddTodoMenuItemDialogConfirm}
       >
@@ -525,7 +539,11 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           >
             <Input placeholder="名称" />
           </FormItem>
-          <FormItem label="文件夹" name="parent" initialData="">
+          <FormItem
+            label="文件夹"
+            name="parent"
+            initialData={addTodoMenuItemFormDefaultFolder}
+          >
             <Select
               showArrow={false}
               selectInputProps={{
