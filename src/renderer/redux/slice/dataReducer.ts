@@ -75,11 +75,49 @@ const dataReducer = createSlice({
       }
       state.todoMenu.splice(idx, 1);
     },
-    editTodoMenu(state, action: PayloadAction<ListItem>) {
+    editTodoMenu(
+      state,
+      action: PayloadAction<{
+        listItem: ListItem;
+        realRootItemIndexes: number[];
+        realSubItemIndexes: number[];
+      }>
+    ) {
       const idx = state.todoMenu.findIndex(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.listItem.id
       );
-      state.todoMenu[idx] = action.payload;
+      if (action.payload.listItem.folder) {
+        // The current method is used to edit folders and edit items. Skip order adjustment when editing a folder
+        state.todoMenu[idx] = action.payload.listItem;
+        return;
+      }
+      if (state.todoMenu[idx].parent !== action.payload.listItem.parent) {
+        // The parent directory has changed. Adjust the order
+        if (action.payload.listItem.parent === '') {
+          const workingIndex = action.payload.realSubItemIndexes.findIndex(
+            (item) => item === idx
+          );
+          for (
+            let i = workingIndex + 1;
+            i < action.payload.realSubItemIndexes.length;
+            i += 1
+          ) {
+            state.todoMenu[action.payload.realSubItemIndexes[i]].order -= 1;
+          }
+        } else {
+          const workingIndex = action.payload.realRootItemIndexes.findIndex(
+            (item) => item === idx
+          );
+          for (
+            let i = workingIndex + 1;
+            i < action.payload.realRootItemIndexes.length;
+            i += 1
+          ) {
+            state.todoMenu[action.payload.realRootItemIndexes[i]].order -= 1;
+          }
+        }
+      }
+      state.todoMenu[idx] = action.payload.listItem;
     },
     addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
       state.todoMenu.push(action.payload);

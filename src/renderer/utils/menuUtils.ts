@@ -34,6 +34,7 @@ const flatToTree: (data: ListItem[]) => {
   const folders: Array<RenderListItemFolder> = [];
   const handledItems: Array<RenderListItem> = [];
   const unhandledItems: Array<ListItem> = [];
+  const unhandledIndexes: number[] = [];
   data.forEach((value: ListItem, index: number) => {
     // Handle folder items and non sub item first
     if (value.folder) {
@@ -60,9 +61,6 @@ const flatToTree: (data: ListItem[]) => {
       realRootItemIndexes.push(index);
     } else {
       // When the current item is not a folder and is a sub item
-      const currentIndexes = realSubItemIndexes.get(value.parent) as number[];
-      currentIndexes.push(index);
-      realSubItemIndexes.set(value.parent, currentIndexes);
       unhandledItems.push({
         id: value.id,
         title: value.title,
@@ -71,12 +69,16 @@ const flatToTree: (data: ListItem[]) => {
         color: value.color,
         order: value.order,
       });
+      unhandledIndexes.push(index);
     }
   });
-  unhandledItems.forEach((value: ListItem) => {
+  unhandledItems.forEach((value: ListItem, idx: number) => {
     // Handle sub items
     const index = folderIndexes.get(value.parent);
     if (typeof index === 'number') {
+      const currentIndexes = realSubItemIndexes.get(value.parent) as number[];
+      currentIndexes.push(unhandledIndexes[idx]);
+      realSubItemIndexes.set(value.parent, currentIndexes);
       folders[index].children.push({
         id: value.id,
         title: value.title,

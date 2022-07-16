@@ -39,7 +39,11 @@ interface ToDoMenuProps {
   todos: any;
   colors: string[];
   onAddTodoMenuItem: (item: ListItem) => void;
-  onEditTodoMenuItem: (item: ListItem) => void;
+  onEditTodoMenuItem: (
+    item: ListItem,
+    realRootItemIndexes: number[],
+    realSubItemIndexes: number[]
+  ) => void;
   onDeleteTodoMenuItem: (itemId: any, realItemIndexes: number[]) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
@@ -135,18 +139,30 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   );
   const editTodoMenuItemFolderFormConfirm = useCallback(async () => {
     if ((await editTodoMenuItemFolderForm.current?.validate()) === true) {
-      onEditTodoMenuItem({
-        ...todos.find(
-          (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
-        ),
-        title: editTodoMenuItemFolderForm.current?.getFieldsValue(['title'])
-          ?.title,
-      });
+      onEditTodoMenuItem(
+        {
+          ...todos.find(
+            (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
+          ),
+          title: editTodoMenuItemFolderForm.current?.getFieldsValue(['title'])
+            ?.title,
+        },
+        todoMenu.realRootItemIndexes,
+        todoMenu.realSubItemIndexes.get(
+          editTodoMenuItemFolderDialogState.id as string
+        ) as number[]
+      );
       setEditTodoMenuItemFolderDialogState({
         show: false,
       });
     }
-  }, [onEditTodoMenuItem, todos, editTodoMenuItemFolderDialogState.id]);
+  }, [
+    onEditTodoMenuItem,
+    todos,
+    todoMenu.realRootItemIndexes,
+    todoMenu.realSubItemIndexes,
+    editTodoMenuItemFolderDialogState.id,
+  ]);
   //
   const [editTodoMenuItemDialogState, setEditTodoMenuItemDialogState] =
     useState<{
@@ -169,19 +185,35 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       const idx = todos.findIndex(
         (item: ListItem) => item.id === editTodoMenuItemDialogState.id
       );
-      onEditTodoMenuItem({
-        ...todos[idx],
-        ...editTodoMenuItemForm.current?.getFieldsValue([
-          'title',
-          'color',
-          'parent',
-        ]),
-      });
+      const formFieldsValue = editTodoMenuItemForm.current?.getFieldsValue([
+        'title',
+        'color',
+        'parent',
+      ]);
+      onEditTodoMenuItem(
+        {
+          ...todos[idx],
+          ...formFieldsValue,
+          order:
+            todos[idx].parent === formFieldsValue.parent
+              ? todos[idx].order
+              : getNextOrder(todoMenu.sortedTree, formFieldsValue.parent),
+        },
+        todoMenu.realRootItemIndexes,
+        todoMenu.realSubItemIndexes.get(todos[idx].parent) as number[]
+      );
       setEditTodoMenuItemDialogState({
         show: false,
       });
     }
-  }, [onEditTodoMenuItem, todos, editTodoMenuItemDialogState.id]);
+  }, [
+    todos,
+    onEditTodoMenuItem,
+    todoMenu.sortedTree,
+    todoMenu.realRootItemIndexes,
+    todoMenu.realSubItemIndexes,
+    editTodoMenuItemDialogState.id,
+  ]);
   const { height: sysTitleBarHeight } = useTitleBarAreaRect();
   const [addTagItemDialogShow, setAddTagItemDialogShow] =
     useState<boolean>(false);
