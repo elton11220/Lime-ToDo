@@ -23,7 +23,7 @@ import {
   FolderIcon,
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
-import { flatToTree } from 'renderer/utils/menuUtils';
+import { flatToTree, getNextOrder } from 'renderer/utils/menuUtils';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
@@ -40,7 +40,7 @@ interface ToDoMenuProps {
   colors: string[];
   onAddTodoMenuItem: (item: ListItem) => void;
   onEditTodoMenuItem: (item: ListItem) => void;
-  onDeleteTodoMenuItem: (itemId: any) => void;
+  onDeleteTodoMenuItem: (itemId: any, realItemIndexes: number[]) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
   onBreakTodoMenuItemFolder: (itemId: any) => void;
@@ -65,6 +65,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onEditTagItem,
   } = props;
   const todoMenu = useMemo(() => flatToTree(todos), [todos]);
+  const sortedTags = useMemo(
+    () => [...tags].sort((a: TagItem, b: TagItem) => a.order - b.order),
+    [tags]
+  );
   const [expanded, setExpanded] = useState<MenuValue[]>([]);
   const showContextMenu = (e: any) => {
     e.preventDefault();
@@ -186,11 +190,12 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     if ((await onAddTagItemDialogForm.current?.validate()) === true) {
       onAddTagItem({
         id: new Date().getTime().toString(),
+        order: getNextOrder(tags),
         ...onAddTagItemDialogForm.current?.getFieldsValue(['color', 'title']),
       });
       setAddTagItemDialogShow(false);
     }
-  }, [onAddTagItem]);
+  }, [onAddTagItem, tags]);
   const getRandomColorId = useCallback(() => {
     return Math.floor(Math.random() * colors.length);
   }, [colors]);
@@ -217,6 +222,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           folder: true,
           parent: '',
           color: -1,
+          order: getNextOrder(todoMenu.sortedTree, ''),
         });
         setAddTodoMenuItemFolderInputValue(() => '');
         if (editTodoMenuItemDialogState.show) {
@@ -235,23 +241,26 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       addTodoMenuItemDialogShow,
       editTodoMenuItemDialogState.show,
       onAddTodoMenuItemFolder,
+      todoMenu,
     ]
   );
   const onAddTodoMenuItemDialogConfirm = useCallback(async () => {
     if ((await addTodoMenuItemForm.current?.validate()) === true) {
+      const formFieldsValue = addTodoMenuItemForm.current?.getFieldsValue([
+        'title',
+        'parent',
+        'color',
+      ]);
       onAddTodoMenuItem({
         id: new Date().getTime().toString(),
-        ...addTodoMenuItemForm.current?.getFieldsValue([
-          'title',
-          'parent',
-          'color',
-        ]),
+        ...formFieldsValue,
         folder: false,
+        order: getNextOrder(todoMenu.sortedTree, formFieldsValue.parent),
       });
       setAddTodoMenuItemDialogShow(false);
       setAddTodoMenuItemFormDefaultFolder('');
     }
-  }, [onAddTodoMenuItem]);
+  }, [onAddTodoMenuItem, todoMenu]);
   const todoMenuFolders = useMemo(
     () => [
       <Option value="-1" disabled>
@@ -314,7 +323,15 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           cancelBtn: '关闭',
           showOverlay: false,
           onConfirm: () => {
-            onDeleteTodoMenuItem(itemId);
+            const todoItem: ListItem = todos.find(
+              (todo: ListItem) => todo.id === itemId
+            );
+            onDeleteTodoMenuItem(
+              itemId,
+              todoItem.parent === ''
+                ? todoMenu.realRootItemIndexes
+                : (todoMenu.realSubItemIndexes.get(todoItem.parent) as number[])
+            );
             // @ts-ignore
             dialog.hide();
           },
@@ -381,8 +398,14 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       editToDoMenuItemFolderListener();
       addToDoMenuItemFolderListener();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    onBreakTodoMenuItemFolder,
+    onDeleteTagItem,
+    onDeleteTodoMenuItem,
+    todoMenu.realRootItemIndexes,
+    todoMenu.realSubItemIndexes,
+    todos,
+  ]);
   return (
     <>
       <Dialog
@@ -632,11 +655,23 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
             title={
               <div className={styles.menuGroupTitleContainer}>
                 <span>清单</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('todos', todos);
+                    console.log('tree', todoMenu.sortedTree);
+                    console.log('root', todoMenu.realRootItemIndexes);
+                    console.log('sub', todoMenu.realSubItemIndexes);
+                    console.log('tags', tags);
+                  }}
+                >
+                  debug
+                </button>
                 <AddIcon
                   size="large"
                   style={{ color: 'var(--td-text-color-placeholder)' }}
                   className={`${styles.icon} ${
-                    todoMenu.length <= 0 ? styles.active : null
+                    todoMenu.sortedTree.length <= 0 ? styles.active : null
                   }`}
                   onClick={() => {
                     setAddTodoMenuItemDialogShow(true);
@@ -645,7 +680,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
               </div>
             }
           >
-            {todoMenu.map((item) => {
+            {todoMenu.sortedTree.map((item) => {
               if (!item.folder) {
                 return (
                   <MenuItem
@@ -811,7 +846,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
               </div>
             }
           >
-            {tags.map((item: TagItem) => (
+            {sortedTags.map((item: TagItem) => (
               <MenuItem key={item.id} value={item.id} icon={<DiscountIcon />}>
                 <div
                   className={styles.identifier}

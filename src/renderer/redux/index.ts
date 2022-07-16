@@ -6,6 +6,10 @@ const store = configureStore({
   reducer: {
     dataReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: true,
+    }),
 });
 
 export default store;

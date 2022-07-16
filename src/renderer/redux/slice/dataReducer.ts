@@ -37,7 +37,11 @@ const dataReducer = createSlice({
   initialState,
   reducers: {
     deleteTag(state, action: PayloadAction<string>) {
-      state.tags = state.tags.filter((item) => item.id !== action.payload);
+      const idx = state.tags.findIndex((item) => item.id === action.payload);
+      state.tags.splice(idx, 1);
+      for (let i = idx; i < state.tags.length; i += 1) {
+        state.tags[i].order = i;
+      }
     },
     addTag(state, action: PayloadAction<TagItem>) {
       state.tags.push(action.payload);
@@ -49,10 +53,27 @@ const dataReducer = createSlice({
     addTodoMenu(state, action: PayloadAction<ListItem>) {
       state.todoMenu.push(action.payload);
     },
-    deleteTodoMenu(state, action: PayloadAction<string>) {
-      state.todoMenu = state.todoMenu.filter(
-        (item) => item.id !== action.payload
+    deleteTodoMenu(
+      state,
+      action: PayloadAction<{
+        itemId: string;
+        realItemIndexes: number[];
+      }>
+    ) {
+      const idx = state.todoMenu.findIndex(
+        (item: ListItem) => item.id === action.payload.itemId
       );
+      const workingIndex = action.payload.realItemIndexes.findIndex(
+        (item) => item === idx
+      );
+      for (
+        let i = workingIndex + 1;
+        i < action.payload.realItemIndexes.length;
+        i += 1
+      ) {
+        state.todoMenu[action.payload.realItemIndexes[i]].order -= 1;
+      }
+      state.todoMenu.splice(idx, 1);
     },
     editTodoMenu(state, action: PayloadAction<ListItem>) {
       const idx = state.todoMenu.findIndex(

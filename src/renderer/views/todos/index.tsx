@@ -48,10 +48,13 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     dispatch(editTodoMenu(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const deleteTodoMenuItem = useCallback((itemId: string) => {
-    dispatch(deleteTodoMenu(itemId));
+  const deleteTodoMenuItem = useCallback(
+    (itemId: string, realItemIndexes: number[]) => {
+      dispatch(deleteTodoMenu({ itemId, realItemIndexes }));
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    []
+  );
   const addToDoMenuItemFolder = useCallback((item: ListItem) => {
     dispatch(addTodoMenuFolder(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
