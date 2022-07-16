@@ -122,16 +122,36 @@ const dataReducer = createSlice({
     addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
       state.todoMenu.push(action.payload);
     },
-    breakTodoMenuFolder(state, action: PayloadAction<string>) {
-      const innerItems = state.todoMenu
-        .filter((item) => item.parent === action.payload)
-        .map((item) => ({ ...item, folder: false, parent: '' }));
-      state.todoMenu = [
-        ...state.todoMenu.filter(
-          (item) => item.parent !== action.payload && item.id !== action.payload
-        ),
-        ...innerItems,
-      ];
+    breakTodoMenuFolder(
+      state,
+      action: PayloadAction<{
+        itemId: string;
+        realSubItemIndexes: number[];
+        realRootItemIndexes: number[];
+      }>
+    ) {
+      const index = state.todoMenu.findIndex(
+        (item) => item.id === action.payload.itemId
+      );
+      const workingIndex = action.payload.realRootItemIndexes.findIndex(
+        (item) => item === index
+      );
+      for (
+        let i = workingIndex + 1;
+        i < action.payload.realRootItemIndexes.length;
+        i += 1
+      ) {
+        state.todoMenu[action.payload.realRootItemIndexes[i]].order -= 1;
+      }
+      action.payload.realSubItemIndexes.forEach((val, idx) => {
+        state.todoMenu[val] = {
+          ...state.todoMenu[val],
+          folder: false,
+          parent: '',
+          order: action.payload.realRootItemIndexes.length + idx - 1,
+        };
+      });
+      state.todoMenu.splice(index, 1);
     },
   },
 });

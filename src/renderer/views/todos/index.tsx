@@ -68,10 +68,19 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     dispatch(addTodoMenuFolder(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const breakToDoMenuItemFolder = useCallback((itemId: string) => {
-    dispatch(breakTodoMenuFolder(itemId));
+  const breakToDoMenuItemFolder = useCallback(
+    (
+      itemId: string,
+      realSubItemIndexes: number[],
+      realRootItemIndexes: number[]
+    ) => {
+      dispatch(
+        breakTodoMenuFolder({ itemId, realSubItemIndexes, realRootItemIndexes })
+      );
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    []
+  );
   return (
     <Layout style={{ height: '100%' }}>
       <Aside>

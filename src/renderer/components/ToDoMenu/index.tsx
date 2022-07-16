@@ -47,7 +47,11 @@ interface ToDoMenuProps {
   onDeleteTodoMenuItem: (itemId: any, realItemIndexes: number[]) => void;
   onDeleteTagItem: (itemId: any) => void;
   onAddTodoMenuItemFolder: (item: ListItem) => void;
-  onBreakTodoMenuItemFolder: (itemId: any) => void;
+  onBreakTodoMenuItemFolder: (
+    itemId: any,
+    realSubItemIndexes: number[],
+    realRootItemIndexes: number[]
+  ) => void;
   onAddTagItem: (item: TagItem) => void;
   onEditTagItem: (item: TagItem) => void;
 }
@@ -394,7 +398,11 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           cancelBtn: '关闭',
           showOverlay: false,
           onConfirm: () => {
-            onBreakTodoMenuItemFolder(itemId);
+            onBreakTodoMenuItemFolder(
+              itemId,
+              todoMenu.realSubItemIndexes.get(itemId as string) as number[],
+              todoMenu.realRootItemIndexes
+            );
             // @ts-ignore
             dialog.hide();
           },
