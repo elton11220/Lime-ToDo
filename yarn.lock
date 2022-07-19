@@ -266,7 +266,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.16.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.16.5":
+  version "7.18.9"
+  resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.18.9.tgz#b4fcfce55db3d2e5e080d2490f608a3b9f407f4a"
+  integrity sha512-lkqXDcvlFT5rvEjiu6+QYO+1GXrEHRo2LOtS7E4GtX5ESIZOgepqsZBVIj6Pv+a6zqsya9VCgiK1KAK4BvJDAw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
   version "7.18.6"
   resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.18.6.tgz#6a1ef59f838debd670421f8c7f2cbb8da9751580"
   integrity sha512-t9wi7/AW6XtKahAe20Yw0/mMljKq0B1r2fPdvaAdV/KPDZewFXdaaa6K7lxmZBZ8FBNpCiAT6iHPmd6QO9bKfQ==
@@ -8550,7 +8557,15 @@ tar@^6.0.2, tar@^6.0.5, tar@^6.1.11, tar@^6.1.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-tdesign-icons-react@^0.1.1, tdesign-icons-react@~0.1.0:
+tdesign-icons-react@^0.1.1:
+  version "0.1.3"
+  resolved "https://registry.npmmirror.com/tdesign-icons-react/-/tdesign-icons-react-0.1.3.tgz#24dd3ca94b354c803dd386125394e42fe479bbd8"
+  integrity sha512-sR5wgIHxWnnxVXYTSxX8gx4KKMNFWqZPZseMCNodhgrNtph8WtW2mkz7ytY3MkyJ510YqImJ/eVLvAS4hPcsqw==
+  dependencies:
+    "@babel/runtime" "^7.16.5"
+    classnames "^2.2.6"
+
+tdesign-icons-react@~0.1.0:
   version "0.1.1"
   resolved "https://registry.npmmirror.com/tdesign-icons-react/-/tdesign-icons-react-0.1.1.tgz#458b27a649deedcbd16cec1fa86f74a432942fc4"
   integrity sha512-XEcEmsid0Hh+pSWGBlOn6uXLGZyKb54dNO+/OQuCHZYIxD6zT2gtb90MfAlcexQNmVJdIuApsGv/laLhhwHUvQ==
