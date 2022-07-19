@@ -12,6 +12,8 @@ import {
   editTag,
   editTodoMenu,
 } from 'renderer/redux/slice/dataReducer';
+import ToDoList from 'renderer/components/ToDoList';
+
 import styles from './style.module.scss';
 
 const { Aside, Content } = Layout;
@@ -100,8 +102,8 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
         />
       </Aside>
-      <Content>
-        <span>123</span>
+      <Content className={styles.content}>
+        <ToDoList />
       </Content>
     </Layout>
   );

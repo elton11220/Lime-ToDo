@@ -1,0 +1,35 @@
+.container {
+  background-color: var(--td-bg-color-container);
+  height: 100%;
+  flex: 1;
+  width: 0;
+  margin: 0 1px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  .header {
+    height: 85px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    overflow: hidden;
+    > .left {
+      display: flex;
+      align-items: center;
+      width: calc(100% - 22px);
+      overflow: hidden;
+      .title {
+        margin: 0 20px 0 12px;
+        font-size: 23px;
+        font-weight: bold;
+        word-break: keep-all;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        user-select: none;
+      }
+    }
+  }
+}
