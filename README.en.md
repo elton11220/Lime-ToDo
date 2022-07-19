@@ -10,6 +10,7 @@ Lime ToDo is a cross platform to-do list program developed with React, Electron 
 ## Dev plan
 
 - [ ] Windows client development
+- [ ] Dark Mode
 - [ ] Daily attendance
 - [ ] Automatic update
 - [ ] Spotlight
@@ -19,6 +20,7 @@ Lime ToDo is a cross platform to-do list program developed with React, Electron 
 - [ ] Cloud synchronization
 - [ ] Privatized cloud synchronization
 - [ ] App development（React Native）
+- [ ] Using linked-list or other data structures to reconstruct the internal data structure of todomenenu components
 - [ ] waiting for updates...
 
 ## Installation
