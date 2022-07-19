@@ -23,7 +23,7 @@ const connector = connect((state: any) => ({
 }));
 
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
-  const [active, setActive] = useState('');
+  const [active, setActive] = useState('new');
   const { todos, tags, colors } = props;
   const dispatch = useDispatch();
   const deleteTagItem = useCallback((itemId: string) => {
