@@ -1,6 +1,7 @@
 import React from 'react';
 import { EllipsisIcon, MenuUnfoldIcon } from 'tdesign-icons-react';
 import { Space } from 'tdesign-react';
+import NewTaskInput from '../NewTaskInput';
 
 import styles from './style.module.scss';
 
@@ -15,6 +16,9 @@ const ToDoList: React.FC = (props) => {
         <Space>
           <EllipsisIcon size="22px" />
         </Space>
+      </div>
+      <div className={styles.inputWrapper}>
+        <NewTaskInput />
       </div>
     </div>
   );
