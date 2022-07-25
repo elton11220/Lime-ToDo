@@ -19,14 +19,14 @@ import styles from './style.module.scss';
 const { Aside, Content } = Layout;
 
 const connector = connect((state: any) => ({
-  todos: state.dataReducer.todoMenu,
+  todoMenu: state.dataReducer.todoMenu,
   tags: state.dataReducer.tags,
   colors: state.dataReducer.colors,
 }));
 
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('new');
-  const { todos, tags, colors } = props;
+  const { todoMenu, tags, colors } = props;
   const dispatch = useDispatch();
   const deleteTagItem = useCallback((itemId: string) => {
     dispatch(deleteTag(itemId));
@@ -90,7 +90,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           active={active}
           onChange={setActive}
           tags={tags}
-          todos={todos}
+          menu={todoMenu}
           colors={colors}
           onDeleteTagItem={deleteTagItem}
           onAddTagItem={addTagItem}

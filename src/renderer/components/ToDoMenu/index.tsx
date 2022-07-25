@@ -36,7 +36,7 @@ interface ToDoMenuProps {
   active: string;
   onChange: (v: string) => void;
   tags: any;
-  todos: any;
+  menu: any;
   colors: string[];
   onAddTodoMenuItem: (item: ListItem) => void;
   onEditTodoMenuItem: (
@@ -61,7 +61,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     active,
     onChange,
     tags,
-    todos,
+    menu,
     colors,
     onDeleteTagItem,
     onAddTodoMenuItem,
@@ -72,7 +72,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onAddTagItem,
     onEditTagItem,
   } = props;
-  const todoMenu = useMemo(() => flatToTree(todos), [todos]);
+  const todoMenu = useMemo(() => flatToTree(menu), [menu]);
   const sortedTags = useMemo(
     () => [...tags].sort((a: TagItem, b: TagItem) => a.order - b.order),
     [tags]
@@ -136,16 +136,16 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const editTodoMenuItemFolderForm = useRef<HTMLFormElement>();
   const editTodoMenuItemFolderFormDefaultValue = useMemo(
     () =>
-      todos.find(
+      menu.find(
         (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
       )?.title,
-    [editTodoMenuItemFolderDialogState.id, todos]
+    [editTodoMenuItemFolderDialogState.id, menu]
   );
   const editTodoMenuItemFolderFormConfirm = useCallback(async () => {
     if ((await editTodoMenuItemFolderForm.current?.validate()) === true) {
       onEditTodoMenuItem(
         {
-          ...todos.find(
+          ...menu.find(
             (item: ListItem) => item.id === editTodoMenuItemFolderDialogState.id
           ),
           title: editTodoMenuItemFolderForm.current?.getFieldsValue(['title'])
@@ -162,7 +162,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     }
   }, [
     onEditTodoMenuItem,
-    todos,
+    menu,
     todoMenu.realRootItemIndexes,
     todoMenu.realSubItemIndexes,
     editTodoMenuItemFolderDialogState.id,
@@ -179,14 +179,14 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
   const editTodoMenuItemForm = useRef<HTMLFormElement>();
   const editTodoMenuItemFormDefaultValue = useMemo(
     () =>
-      todos.find(
+      menu.find(
         (item: ListItem) => item.id === editTodoMenuItemDialogState.id
       ) || {},
-    [editTodoMenuItemDialogState.id, todos]
+    [editTodoMenuItemDialogState.id, menu]
   );
   const editTodoMenuItemFormConfirm = useCallback(async () => {
     if ((await editTodoMenuItemForm.current?.validate()) === true) {
-      const idx = todos.findIndex(
+      const idx = menu.findIndex(
         (item: ListItem) => item.id === editTodoMenuItemDialogState.id
       );
       const formFieldsValue = editTodoMenuItemForm.current?.getFieldsValue([
@@ -196,22 +196,22 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       ]);
       onEditTodoMenuItem(
         {
-          ...todos[idx],
+          ...menu[idx],
           ...formFieldsValue,
           order:
-            todos[idx].parent === formFieldsValue.parent
-              ? todos[idx].order
+            menu[idx].parent === formFieldsValue.parent
+              ? menu[idx].order
               : getNextOrder(todoMenu.sortedTree, formFieldsValue.parent),
         },
         todoMenu.realRootItemIndexes,
-        todoMenu.realSubItemIndexes.get(todos[idx].parent) as number[]
+        todoMenu.realSubItemIndexes.get(menu[idx].parent) as number[]
       );
       setEditTodoMenuItemDialogState({
         show: false,
       });
     }
   }, [
-    todos,
+    menu,
     onEditTodoMenuItem,
     todoMenu.sortedTree,
     todoMenu.realRootItemIndexes,
@@ -313,11 +313,11 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
       </Option>,
       <HrDivider top={10} bottom={15} />,
       <Option label="无" value="" />,
-      ...todos
+      ...menu
         .filter((item: ListItem) => item.folder === true)
         .map((item: ListItem) => <Option label={item.title} value={item.id} />),
     ],
-    [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, todos]
+    [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, menu]
   );
   useEffect(() => {
     const editTagItemListener = window.electron.ipcRenderer.on(
@@ -359,7 +359,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           cancelBtn: '关闭',
           showOverlay: false,
           onConfirm: () => {
-            const todoItem: ListItem = todos.find(
+            const todoItem: ListItem = menu.find(
               (todo: ListItem) => todo.id === itemId
             );
             onDeleteTodoMenuItem(
@@ -444,7 +444,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onDeleteTodoMenuItem,
     todoMenu.realRootItemIndexes,
     todoMenu.realSubItemIndexes,
-    todos,
+    menu,
   ]);
   return (
     <>
@@ -695,10 +695,10 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
             title={
               <div className={styles.menuGroupTitleContainer}>
                 <span>清单</span>
-                <button
+                {/* <button
                   type="button"
                   onClick={() => {
-                    console.log('todos', todos);
+                    console.log('menu', menu);
                     console.log('tree', todoMenu.sortedTree);
                     console.log('root', todoMenu.realRootItemIndexes);
                     console.log('sub', todoMenu.realSubItemIndexes);
@@ -706,7 +706,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                   }}
                 >
                   debug
-                </button>
+                </button> */}
                 <AddIcon
                   size="large"
                   style={{ color: 'var(--td-text-color-placeholder)' }}
@@ -841,7 +841,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                           style={{
                             color:
                               !expanded.includes(item.id) &&
-                              todos.find((todo: ListItem) => todo.id === active)
+                              menu.find((todo: ListItem) => todo.id === active)
                                 ?.parent === item.id
                                 ? '#fff'
                                 : 'var(--td-text-color-primary)',
