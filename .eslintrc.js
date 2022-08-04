@@ -10,6 +10,9 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
+    'max-classes-per-file': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off',
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
   parserOptions: {
     ecmaVersion: 2020,
