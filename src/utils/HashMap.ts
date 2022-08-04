@@ -65,6 +65,19 @@ class HashMap<T = any> {
     }
     return null;
   }
+  has(key: any): boolean {
+    const list = this.table[this.getHashCode(key)];
+    if (list !== null) {
+      let currentNode = list.getHead();
+      while (currentNode !== null) {
+        if (currentNode.element.key === key) {
+          return true;
+        }
+        currentNode = currentNode.next;
+      }
+    }
+    return false;
+  }
   remove(key: any): boolean {
     const hash = this.getHashCode(key);
     const list = this.table[hash];
