@@ -5,6 +5,7 @@ interface TodoContextType {
   tagTitles: Map<string, string>;
   listTitles: Map<string, string>;
   active: string;
+  todos: TodoItem[];
 }
 
 const TodoContext = createContext<TodoContextType>({
@@ -12,6 +13,7 @@ const TodoContext = createContext<TodoContextType>({
   tagTitles: new Map(),
   listTitles: new Map(),
   active: 'collection',
+  todos: [],
 });
 
 export default TodoContext;

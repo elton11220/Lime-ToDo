@@ -23,11 +23,12 @@ const connector = connect((state: any) => ({
   todoMenu: state.dataReducer.todoMenu,
   tags: state.dataReducer.tags,
   colors: state.dataReducer.colors,
+  todos: state.dataReducer.todos,
 }));
 
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('collection');
-  const { todoMenu, tags, colors } = props;
+  const { todoMenu, tags, colors, todos } = props;
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
@@ -143,6 +144,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
             tagTitles,
             listTitles,
             active,
+            todos,
           }}
         >
           <ToDoList title={todoListTitle} />

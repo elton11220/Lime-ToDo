@@ -7,6 +7,7 @@ interface InitialState {
   todoMenu: ListItem[];
   tags: TagItem[];
   colors: string[];
+  todos: TodoItem[];
 }
 
 const initialState: InitialState = {
@@ -30,6 +31,7 @@ const initialState: InitialState = {
   ],
   todoMenu: [],
   tags: [],
+  todos: [],
 };
 
 const dataReducer = createSlice({
