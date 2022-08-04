@@ -45,6 +45,28 @@ declare global {
     children: Array<RenderListItem>;
     order: number;
   }
+  interface TodoStep {
+    id: string;
+    finish: boolean;
+    title: string;
+    order: number;
+  }
+  interface TodoItem {
+    id: string;
+    parent: string;
+    order: number;
+    finish: boolean;
+    priority: number;
+    data: {
+      title: string;
+      note: string;
+      steps: TodoStep[];
+      tags: string[];
+      location: string;
+      remind_at: string;
+      end_at: string;
+    };
+  }
 }
 
 export {};
