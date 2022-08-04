@@ -26,7 +26,7 @@ const connector = connect((state: any) => ({
 }));
 
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
-  const [active, setActive] = useState('new');
+  const [active, setActive] = useState('collection');
   const { todoMenu, tags, colors } = props;
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
