@@ -251,4 +251,4 @@ class SortedLinkedList<T> extends LinkedList<T> {
   }
 }
 
-export { LinkedList, SortedLinkedList };
+export { Compare, LinkedList, SortedLinkedList };
