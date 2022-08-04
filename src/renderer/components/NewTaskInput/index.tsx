@@ -4,7 +4,12 @@ import { AddIcon } from 'tdesign-icons-react';
 
 import styles from './style.module.scss';
 
-const NewTaskInput: React.FC = (props) => {
+interface NewTaskInputProps {
+  placeholder: string;
+}
+
+const NewTaskInput: React.FC<NewTaskInputProps> = (props) => {
+  const { placeholder } = props;
   const [inputState, setInputState] = useState<{
     value: string;
     focused: boolean;
@@ -48,7 +53,7 @@ const NewTaskInput: React.FC = (props) => {
             color="var(--td-text-color-placeholder)"
             style={{ flexShrink: 0 }}
           />
-          <div className={styles.content}>添加任务至“title”，回车即可创建</div>
+          <div className={styles.content}>{placeholder}</div>
         </div>
       )}
     </div>

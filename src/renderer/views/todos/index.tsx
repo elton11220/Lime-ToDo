@@ -12,9 +12,10 @@ import {
   editTag,
   editTodoMenu,
 } from 'renderer/redux/slice/dataReducer';
-import ToDoList from 'renderer/components/ToDoList';
 
+import ToDoList from 'renderer/components/ToDoList';
 import styles from './style.module.scss';
+import TodoContext from './context';
 
 const { Aside, Content } = Layout;
 
@@ -27,16 +28,23 @@ const connector = connect((state: any) => ({
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('new');
   const { todoMenu, tags, colors } = props;
-  const listTitles = useMemo(() => {
+  const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
       map.set(val.id, val.title);
     });
-    tags.forEach((val: TagItem) => {
+    return map;
+  }, [todoMenu]);
+  const tagTitles = useMemo(() => {
+    const map = new Map<string, string>();
+    tags.forEach((val: ListItem) => {
       map.set(val.id, val.title);
     });
     return map;
-  }, [todoMenu, tags]);
+  }, [tags]);
+  const listTitles = useMemo(() => {
+    return new Map([...todoMenuTitles, ...tagTitles]);
+  }, [todoMenuTitles, tagTitles]);
   const dispatch = useDispatch();
   const deleteTagItem = useCallback((itemId: string) => {
     dispatch(deleteTag(itemId));
@@ -129,7 +137,16 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
         />
       </Aside>
       <Content className={styles.content}>
-        <ToDoList title={todoListTitle} />
+        <TodoContext.Provider
+          value={{
+            todoMenuTitles,
+            tagTitles,
+            listTitles,
+            active,
+          }}
+        >
+          <ToDoList title={todoListTitle} />
+        </TodoContext.Provider>
       </Content>
     </Layout>
   );
