@@ -682,8 +682,8 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
           <MenuItem value="recent" icon={<TimeIcon />}>
             最近7天
           </MenuItem>
-          <MenuItem value="new" icon={<RootListIcon />}>
-            未分类
+          <MenuItem value="collection" icon={<RootListIcon />}>
+            收集箱
           </MenuItem>
           <MenuItem value="finish" icon={<CheckCircleIcon />}>
             已完成

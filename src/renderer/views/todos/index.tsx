@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Layout } from 'tdesign-react';
 import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import ToDoMenu from 'renderer/components/ToDoMenu';
@@ -27,6 +27,16 @@ const connector = connect((state: any) => ({
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('new');
   const { todoMenu, tags, colors } = props;
+  const listTitles = useMemo(() => {
+    const map = new Map<string, string>();
+    todoMenu.forEach((val: ListItem) => {
+      map.set(val.id, val.title);
+    });
+    tags.forEach((val: TagItem) => {
+      map.set(val.id, val.title);
+    });
+    return map;
+  }, [todoMenu, tags]);
   const dispatch = useDispatch();
   const deleteTagItem = useCallback((itemId: string) => {
     dispatch(deleteTag(itemId));
@@ -83,6 +93,22 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+  const todoListTitle = useMemo<string>(() => {
+    switch (active) {
+      case 'today':
+        return '今天';
+      case 'recent':
+        return '最近7天';
+      case 'collection':
+        return '收集箱';
+      case 'finish':
+        return '已完成';
+      case 'trash':
+        return '垃圾桶';
+      default:
+        return listTitles.get(active) ?? '';
+    }
+  }, [active, listTitles]);
   return (
     <Layout style={{ height: '100%' }}>
       <Aside>
@@ -103,7 +129,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
         />
       </Aside>
       <Content className={styles.content}>
-        <ToDoList />
+        <ToDoList title={todoListTitle} />
       </Content>
     </Layout>
   );

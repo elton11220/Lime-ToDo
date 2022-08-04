@@ -5,13 +5,18 @@ import NewTaskInput from '../NewTaskInput';
 
 import styles from './style.module.scss';
 
-const ToDoList: React.FC = (props) => {
+interface ToDoListProps {
+  title: string;
+}
+
+const ToDoList: React.FC<ToDoListProps> = (props) => {
+  const { title } = props;
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.left}>
           <MenuUnfoldIcon size="22px" />
-          <div className={styles.title}>title</div>
+          <div className={styles.title}>{title}</div>
         </div>
         <Space>
           <EllipsisIcon size="22px" />
