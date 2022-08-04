@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import TodoContext from 'renderer/views/todos/context';
 // import TodoContext from 'renderer/views/todos/context';
 import { EllipsisIcon, MenuUnfoldIcon } from 'tdesign-icons-react';
@@ -12,7 +12,7 @@ interface ToDoListProps {
 }
 
 const ToDoList: React.FC<ToDoListProps> = (props) => {
-  const { active } = useContext(TodoContext);
+  const { active, tagTitles } = useContext(TodoContext);
   const { title } = props;
   const newTaskInputPlaceholder = useMemo<string>(() => {
     if (active === 'today' || active === 'recent') {
@@ -21,8 +21,24 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
     if (active === 'collection') {
       return '添加任务至“收集箱”，回车即可创建';
     }
-    return `添加任务至“${title}”，回车即可创建`;
-  }, [title, active]);
+    const isTag = tagTitles.has(active);
+    return isTag ? `#${title}` : `添加任务至“${title}”，回车即可创建`;
+  }, [active, tagTitles, title]);
+  const defaultTargetId = useMemo<string>(() => {
+    if (
+      active === 'recent' ||
+      active === 'today' ||
+      active === 'collection' ||
+      tagTitles.has(active)
+    ) {
+      return 'collection';
+    }
+    return active;
+  }, [active, tagTitles]);
+  const [newTaskTargetId, setNewTaskTargetId] = useState(defaultTargetId);
+  useEffect(() => {
+    setNewTaskTargetId(defaultTargetId);
+  }, [defaultTargetId]);
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -36,7 +52,10 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
       </div>
       {active !== 'trash' && active !== 'finish' ? (
         <div className={styles.inputWrapper}>
-          <NewTaskInput placeholder={newTaskInputPlaceholder} />
+          <NewTaskInput
+            placeholder={newTaskInputPlaceholder}
+            targetId={newTaskTargetId}
+          />
         </div>
       ) : null}
     </div>

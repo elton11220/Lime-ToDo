@@ -6,10 +6,11 @@ import styles from './style.module.scss';
 
 interface NewTaskInputProps {
   placeholder: string;
+  targetId: string;
 }
 
 const NewTaskInput: React.FC<NewTaskInputProps> = (props) => {
-  const { placeholder } = props;
+  const { placeholder, targetId } = props;
   const [inputState, setInputState] = useState<{
     value: string;
     focused: boolean;
@@ -56,6 +57,7 @@ const NewTaskInput: React.FC<NewTaskInputProps> = (props) => {
           <div className={styles.content}>{placeholder}</div>
         </div>
       )}
+      <span>{targetId}</span>
     </div>
   );
 };
