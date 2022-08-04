@@ -4,6 +4,7 @@ import './App.css';
 import Todos from './views/todos';
 import Window from './views/Window';
 import store from './redux';
+import 'tdesign-react/es/style/index.css';
 
 export default function App() {
   return (
