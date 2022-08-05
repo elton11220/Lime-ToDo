@@ -1,11 +1,13 @@
 import { createContext } from 'react';
+import HashMap from 'utils/HashMap';
+import { SortedLinkedList } from 'utils/LinkedList';
 
 interface TodoContextType {
   todoMenuTitles: Map<string, string>;
   tagTitles: Map<string, string>;
   listTitles: Map<string, string>;
   active: string;
-  todos: TodoItem[];
+  todoItemsMap: HashMap<SortedLinkedList<TodoItem>>;
 }
 
 const TodoContext = createContext<TodoContextType>({
@@ -13,7 +15,7 @@ const TodoContext = createContext<TodoContextType>({
   tagTitles: new Map(),
   listTitles: new Map(),
   active: 'collection',
-  todos: [],
+  todoItemsMap: new HashMap<SortedLinkedList<TodoItem>>(),
 });
 
 export default TodoContext;

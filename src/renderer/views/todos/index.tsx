@@ -14,6 +14,7 @@ import {
 } from 'renderer/redux/slice/dataReducer';
 
 import ToDoList from 'renderer/components/ToDoList';
+import { getTodoItemsMap } from 'renderer/utils/itemUtils';
 import styles from './style.module.scss';
 import TodoContext from './context';
 
@@ -29,6 +30,7 @@ const connector = connect((state: any) => ({
 const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('collection');
   const { todoMenu, tags, colors, todos } = props;
+  const todoItemsMap = useMemo(() => getTodoItemsMap(todos), [todos]);
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
@@ -144,7 +146,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
             tagTitles,
             listTitles,
             active,
-            todos,
+            todoItemsMap,
           }}
         >
           <ToDoList title={todoListTitle} />
