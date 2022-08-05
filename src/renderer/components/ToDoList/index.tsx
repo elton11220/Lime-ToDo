@@ -73,10 +73,12 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
         </div>
       ) : (
         <div className={styles.emptyContainer}>
-          <Lottie size="300px" animationData={emptyTaskAnimation} />
-          <div className={styles.description}>
-            <div>没有任务，放松一下</div>
-            <div>想记点什么？点击输入框写下来</div>
+          <div className={styles.empty}>
+            <Lottie size="300px" animationData={emptyTaskAnimation} />
+            <div className={styles.description}>
+              <div>没有任务，放松一下</div>
+              <div>想记点什么？点击输入框写下来</div>
+            </div>
           </div>
         </div>
       )}
