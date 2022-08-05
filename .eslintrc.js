@@ -13,6 +13,8 @@ module.exports = {
     'max-classes-per-file': 'off',
     '@typescript-eslint/lines-between-class-members': 'off',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'react/require-default-props': 'off',
+    'consistent-return': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
