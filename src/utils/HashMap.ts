@@ -54,7 +54,7 @@ class HashMap<T = any> {
   }
   get(key: any): T | null {
     const list = this.table[this.getHashCode(key)];
-    if (list !== null) {
+    if (list != null) {
       let currentNode = list.getHead();
       while (currentNode !== null) {
         if (currentNode.element.key === key) {
@@ -67,7 +67,7 @@ class HashMap<T = any> {
   }
   has(key: any): boolean {
     const list = this.table[this.getHashCode(key)];
-    if (list !== null) {
+    if (list != null) {
       let currentNode = list.getHead();
       while (currentNode !== null) {
         if (currentNode.element.key === key) {

@@ -15,7 +15,7 @@ class LinkedList<T> {
   #count: number = 0;
   protected head: Node<T> | null = null;
   #equalFn: (a: T, b: T) => boolean;
-  constructor(equalFn: (a: T, b: T) => boolean = defaultEqualFn<T>) {
+  constructor(equalFn: (a: T, b: T) => boolean = defaultEqualFn) {
     this.#equalFn = equalFn;
   }
   get length() {
@@ -225,7 +225,7 @@ function defaultCompareFn<T>(a: T, b: T): Compare {
 class SortedLinkedList<T> extends LinkedList<T> {
   #compareFn: (a: T, b: T) => Compare;
   constructor(
-    compareFn: (a: T, b: T) => Compare = defaultCompareFn<T>,
+    compareFn: (a: T, b: T) => Compare = defaultCompareFn,
     equalFn: (a: T, b: T) => boolean = defaultEqualFn
   ) {
     super(equalFn);
