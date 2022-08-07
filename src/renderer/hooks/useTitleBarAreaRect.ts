@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ipcRenderer } from 'electron';
 
 interface TitleBarAreaRect {
   x?: number | undefined;
@@ -24,21 +25,16 @@ export default function useTitleBarAreaRect(): TitleBarAreaRect {
   });
   const updateDomRect = () => {
     const data =
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       window.navigator.windowControlsOverlay.getTitlebarAreaRect(); // Chrome Experimental API & Chromium 98+ Only. It queries the current geometry of the title bar area of the Progressive Web App window.
     setDomRect(data);
   };
   useEffect(() => {
     updateDomRect();
-    const windowMaximumChangeHandler = window.electron.ipcRenderer.on(
-      'windowMaximumChange',
-      updateDomRect
-    );
+    ipcRenderer.on('windowMaximumChange', updateDomRect);
     return () => {
-      windowMaximumChangeHandler?.();
+      ipcRenderer.removeListener('windowMaximumChange', updateDomRect);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return domRect;
 }
