@@ -1,11 +1,5 @@
-import React, {
-  useEffect,
-  useMemo,
-  memo,
-  useState,
-  useRef,
-  useCallback,
-} from 'react';
+import React, { useMemo, memo, useState, useRef, useCallback } from 'react';
+import { ipcRenderer } from 'electron';
 import { Dialog, DialogPlugin, Form, Input, Menu, Select } from 'tdesign-react';
 import type { MenuValue, InputValue } from 'tdesign-react';
 import {
@@ -24,6 +18,7 @@ import {
 } from 'tdesign-icons-react';
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import { flatToTree, getNextOrder } from 'renderer/utils/menuUtils';
+import useIpcRendererListener from 'renderer/hooks/useIpcRendererListener';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
@@ -85,13 +80,13 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     if (itemType === null || itemID === null) {
       return;
     }
-    window.electron.ipcRenderer.sendMessage('show-context-menu', {
+    ipcRenderer.send('show-context-menu', {
       itemType,
       itemID,
     });
   };
   const showContextMenuByClick = (itemType: string, itemID: string) => {
-    window.electron.ipcRenderer.sendMessage('show-context-menu', {
+    ipcRenderer.send('show-context-menu', {
       itemType,
       itemID,
     });
@@ -319,133 +314,94 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     ],
     [addTodoMenuItemFolder, addTodoMenuItemFolderInputValue, menu]
   );
-  useEffect(() => {
-    const editTagItemListener = window.electron.ipcRenderer.on(
-      'edit-tagItem-menu',
-      (tagId) => {
-        setEditTagItemDialogState({ show: true, id: tagId as string });
-      }
-    ) as () => void;
-    const deleteTagItemListener = window.electron.ipcRenderer.on(
-      'delete-tagItem-menu',
-      (tagId) => {
+  useIpcRendererListener('edit-tagItem-menu', (tagId) => {
+    setEditTagItemDialogState({ show: true, id: tagId as string });
+  });
+  useIpcRendererListener('delete-tagItem-menu', (tagId) => {
+    // @ts-ignore
+    const dialog = DialogPlugin.confirm({
+      header: '删除标签',
+      body: '删除后，标签将会从任务中移除',
+      confirmBtn: '确定',
+      cancelBtn: '关闭',
+      showOverlay: false,
+      onConfirm: () => {
+        onDeleteTagItem(tagId);
         // @ts-ignore
-        const dialog = DialogPlugin.confirm({
-          header: '删除标签',
-          body: '删除后，标签将会从任务中移除',
-          confirmBtn: '确定',
-          cancelBtn: '关闭',
-          showOverlay: false,
-          onConfirm: () => {
-            onDeleteTagItem(tagId);
-            // @ts-ignore
-            dialog.hide();
-          },
-          onClose: () => {
-            // @ts-ignore
-            dialog.hide();
-          },
-        });
-      }
-    ) as () => void;
-    const deleteToDoMenuItemListener = window.electron.ipcRenderer.on(
-      'delete-toDoMenuItem-menu',
-      (itemId) => {
+        dialog.hide();
+      },
+      onClose: () => {
         // @ts-ignore
-        const dialog = DialogPlugin.confirm({
-          header: '删除清单',
-          body: '删除清单会删除清单内的所有任务，确定要删除吗？',
-          confirmBtn: '确定',
-          cancelBtn: '关闭',
-          showOverlay: false,
-          onConfirm: () => {
-            const todoItem: ListItem = menu.find(
-              (todo: ListItem) => todo.id === itemId
-            );
-            onDeleteTodoMenuItem(
-              itemId,
-              todoItem.parent === ''
-                ? todoMenu.realRootItemIndexes
-                : (todoMenu.realSubItemIndexes.get(todoItem.parent) as number[])
-            );
-            // @ts-ignore
-            dialog.hide();
-          },
-          onClose: () => {
-            // @ts-ignore
-            dialog.hide();
-          },
-        });
-      }
-    ) as () => void;
-    const editToDoMenuItemListener = window.electron.ipcRenderer.on(
-      'edit-toDoMenuItem-menu',
-      (itemId) => {
-        setEditTodoMenuItemDialogState({
-          id: itemId as string,
-          show: true,
-        });
-      }
-    ) as () => void;
-    const breakToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
-      'break-toDoMenuItemFolder-menu',
-      (itemId) => {
+        dialog.hide();
+      },
+    });
+  });
+  useIpcRendererListener('delete-toDoMenuItem-menu', (itemId) => {
+    // @ts-ignore
+    const dialog = DialogPlugin.confirm({
+      header: '删除清单',
+      body: '删除清单会删除清单内的所有任务，确定要删除吗？',
+      confirmBtn: '确定',
+      cancelBtn: '关闭',
+      showOverlay: false,
+      onConfirm: () => {
+        const todoItem: ListItem = menu.find(
+          (todo: ListItem) => todo.id === itemId
+        );
+        onDeleteTodoMenuItem(
+          itemId,
+          todoItem.parent === ''
+            ? todoMenu.realRootItemIndexes
+            : (todoMenu.realSubItemIndexes.get(todoItem.parent) as number[])
+        );
         // @ts-ignore
-        const dialog = DialogPlugin.confirm({
-          header: '解散文件夹',
-          body: '解散文件夹后，文件夹中的清单将直接显示在侧边栏中',
-          confirmBtn: '确定',
-          cancelBtn: '关闭',
-          showOverlay: false,
-          onConfirm: () => {
-            onBreakTodoMenuItemFolder(
-              itemId,
-              todoMenu.realSubItemIndexes.get(itemId as string) as number[],
-              todoMenu.realRootItemIndexes
-            );
-            // @ts-ignore
-            dialog.hide();
-          },
-          onClose: () => {
-            // @ts-ignore
-            dialog.hide();
-          },
-        });
-      }
-    ) as () => void;
-    const editToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
-      'edit-toDoMenuItemFolder-menu',
-      (itemId) => {
-        setEditTodoMenuItemFolderDialogState({
-          id: itemId as string,
-          show: true,
-        });
-      }
-    ) as () => void;
-    const addToDoMenuItemFolderListener = window.electron.ipcRenderer.on(
-      'add-toDoMenuItemFolder-menu',
-      (itemId) => {
-        setAddTodoMenuItemFormDefaultFolder(itemId as string);
-        setAddTodoMenuItemDialogShow(true);
-      }
-    ) as () => void;
-    return () => {
-      editTagItemListener();
-      deleteTagItemListener();
-      deleteToDoMenuItemListener();
-      editToDoMenuItemListener();
-      breakToDoMenuItemFolderListener();
-      editToDoMenuItemFolderListener();
-      addToDoMenuItemFolderListener();
-    };
-  }, [
-    onBreakTodoMenuItemFolder,
-    onDeleteTagItem,
-    onDeleteTodoMenuItem,
-    todoMenu.realRootItemIndexes,
-    todoMenu.realSubItemIndexes,
-    menu,
-  ]);
+        dialog.hide();
+      },
+      onClose: () => {
+        // @ts-ignore
+        dialog.hide();
+      },
+    });
+  });
+  useIpcRendererListener('edit-toDoMenuItem-menu', (itemId) => {
+    setEditTodoMenuItemDialogState({
+      id: itemId as string,
+      show: true,
+    });
+  });
+  useIpcRendererListener('break-toDoMenuItemFolder-menu', (itemId) => {
+    // @ts-ignore
+    const dialog = DialogPlugin.confirm({
+      header: '解散文件夹',
+      body: '解散文件夹后，文件夹中的清单将直接显示在侧边栏中',
+      confirmBtn: '确定',
+      cancelBtn: '关闭',
+      showOverlay: false,
+      onConfirm: () => {
+        onBreakTodoMenuItemFolder(
+          itemId,
+          todoMenu.realSubItemIndexes.get(itemId as string) as number[],
+          todoMenu.realRootItemIndexes
+        );
+        // @ts-ignore
+        dialog.hide();
+      },
+      onClose: () => {
+        // @ts-ignore
+        dialog.hide();
+      },
+    });
+  });
+  useIpcRendererListener('edit-toDoMenuItemFolder-menu', (itemId) => {
+    setEditTodoMenuItemFolderDialogState({
+      id: itemId as string,
+      show: true,
+    });
+  });
+  useIpcRendererListener('add-toDoMenuItemFolder-menu', (itemId) => {
+    setAddTodoMenuItemFormDefaultFolder(itemId as string);
+    setAddTodoMenuItemDialogShow(true);
+  });
   return (
     <>
       <Dialog
