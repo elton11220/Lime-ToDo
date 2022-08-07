@@ -16,6 +16,8 @@ import MenuBuilder from './menu';
 import ContextMenuBuilder from './contextMenu';
 import { resolveHtmlPath } from './util';
 
+require('@electron/remote/main').initialize();
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -25,25 +27,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
-
-ipcMain.on('windowControl', (event, status) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (status === 0) {
-    win?.minimize();
-  } else if (status === 1) {
-    win?.maximize();
-  } else if (status === 2) {
-    win?.unmaximize();
-  } else if (status === 3) {
-    win?.close();
-  }
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -96,11 +79,15 @@ const createWindow = async () => {
     titleBarStyle: 'hidden',
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
+      // preload: app.isPackaged
+      //   ? path.join(__dirname, 'preload.js')
+      //   : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
+
+  require('@electron/remote/main').enable(mainWindow.webContents);
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
