@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import db from 'renderer/utils/db';
 
 const namespace = 'dataReducer';
 
@@ -40,16 +41,24 @@ const dataReducer = createSlice({
   reducers: {
     deleteTag(state, action: PayloadAction<string>) {
       const idx = state.tags.findIndex((item) => item.id === action.payload);
+      db.tag.update(
+        { order: { $gt: state.tags[idx].order } },
+        { $set: { order: (val: number) => val - 1 } },
+        { multi: true }
+      );
+      db.tag.remove({ id: state.tags[idx].id });
       state.tags.splice(idx, 1);
       for (let i = idx; i < state.tags.length; i += 1) {
         state.tags[i].order = i;
       }
     },
     addTag(state, action: PayloadAction<TagItem>) {
+      db.tag.insert(action.payload);
       state.tags.push(action.payload);
     },
     editTag(state, action: PayloadAction<TagItem>) {
       const idx = state.tags.findIndex((item) => item.id === action.payload.id);
+      db.tag.update({ id: state.tags[idx].id }, action.payload);
       state.tags[idx] = action.payload;
     },
     addTodoMenu(state, action: PayloadAction<ListItem>) {
@@ -155,11 +164,19 @@ const dataReducer = createSlice({
       });
       state.todoMenu.splice(index, 1);
     },
+    loadTag(state, action: PayloadAction<TagItem[]>) {
+      state.tags = action.payload;
+    },
+    loadTodoMenu(state, action: PayloadAction<ListItem[]>) {
+      state.todoMenu = action.payload;
+    },
   },
 });
 
 export default dataReducer.reducer;
 export const {
+  loadTag,
+  loadTodoMenu,
   deleteTag,
   addTag,
   editTag,
