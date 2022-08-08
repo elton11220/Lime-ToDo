@@ -1,21 +1,24 @@
-import path from 'path';
-import { app } from '@electron/remote';
+const DataStore = require('nedb-enhanced');
 
-const DataStore = require('nedb');
-
-const $tagDb = new DataStore({
-  filename: path.join(app.getPath('userData'), '/tag.db'),
+const tag = new DataStore({
+  filename: 'tag',
   autoload: true,
 });
 
-const $todoMenuDb = new DataStore({
-  filename: path.join(app.getPath('userData'), '/todoMenu.db'),
+const todoMenu = new DataStore({
+  filename: 'todoMenu',
   autoload: true,
 });
 
-const $todoItemDb = new DataStore({
-  filename: path.join(app.getPath('userData'), '/todoItem.db'),
+const todoItem = new DataStore({
+  filename: 'todoItem',
   autoload: true,
 });
 
-export { $tagDb, $todoMenuDb, $todoItemDb };
+const db = {
+  tag,
+  todoMenu,
+  todoItem,
+};
+
+export default db;

@@ -6616,10 +6616,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmmirror.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-nedb@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.npmmirror.com/nedb/-/nedb-1.8.0.tgz#0e3502cd82c004d5355a43c9e55577bd7bd91d88"
-  integrity sha512-ip7BJdyb5m+86ZbSb4y10FCCW9g35+U8bDRrZlAfCI6m4dKwEsQ5M52grcDcVK4Vm/vnPlDLywkyo3GliEkb5A==
+nedb-enhanced@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/nedb-enhanced/-/nedb-enhanced-1.0.0.tgz#88ff4ea190439ba58dc3dc4572f3ed2c35d3aa1a"
+  integrity sha512-dBcz+FVrkpKDzQjH9VunIvEqp+Z+DxBPjEYWyGul8Iwwob3T4g8FCV9sNP/q9+dIMOmNTKXodbcL2X0RllKjFg==
   dependencies:
     async "0.2.10"
     binary-search-tree "0.2.5"
