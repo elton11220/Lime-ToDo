@@ -6616,10 +6616,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmmirror.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-nedb-enhanced@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/nedb-enhanced/-/nedb-enhanced-1.0.0.tgz#88ff4ea190439ba58dc3dc4572f3ed2c35d3aa1a"
-  integrity sha512-dBcz+FVrkpKDzQjH9VunIvEqp+Z+DxBPjEYWyGul8Iwwob3T4g8FCV9sNP/q9+dIMOmNTKXodbcL2X0RllKjFg==
+nedb-enhanced@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/nedb-enhanced/-/nedb-enhanced-1.1.0.tgz#0072b0739c58a4d5cf6339a9010712636a5f387f"
+  integrity sha512-AFkNQa6VqO9CHCx3AAreg57lT1PH0k34ZaU24ErOhO4p+eWB5xLx4AABv5NrLp0nUdB+cdtA/yBD0YR5IH0H0A==
   dependencies:
     async "0.2.10"
     binary-search-tree "0.2.5"
@@ -8639,10 +8639,18 @@ tar@^6.0.5, tar@^6.1.11, tar@^6.1.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-tdesign-icons-react@^0.1.2, tdesign-icons-react@^0.1.4:
+tdesign-icons-react@^0.1.2:
   version "0.1.4"
   resolved "https://registry.npmmirror.com/tdesign-icons-react/-/tdesign-icons-react-0.1.4.tgz#75fdf45a6ecebb283e31fcb997ee07c1b7525036"
   integrity sha512-5ZYj6qF6o1mjeSUygSBqTOZBNnwt0rFCFdqlcTuq6brxEnKWVpef9ms4rOVE48EUrk2icOYUiPHR/DH3gZWpfg==
+  dependencies:
+    "@babel/runtime" "^7.16.5"
+    classnames "^2.2.6"
+
+tdesign-icons-react@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmjs.org/tdesign-icons-react/-/tdesign-icons-react-0.1.5.tgz#805a0b20e4f800efd4afab669f110463d31d82a8"
+  integrity sha512-ax0RDOsq1CJ0eab20EC5OsDkQiAr+03Q7pwfh+D6opvdLNOgyaNfPSbLxoUwg7q6sfuvnngbTas7lPTxfpZ4ig==
   dependencies:
     "@babel/runtime" "^7.16.5"
     classnames "^2.2.6"
