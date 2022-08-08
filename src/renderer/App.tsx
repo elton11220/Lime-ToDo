@@ -16,6 +16,11 @@ export default function App() {
         store.dispatch(loadTag(res));
       }
     });
+    db.todoMenu.find({}, (err: any, res: ListItem[]) => {
+      if (res.length > 0) {
+        store.dispatch(loadTodoMenu(res));
+      }
+    });
   }, []);
   return (
     <Provider store={store}>

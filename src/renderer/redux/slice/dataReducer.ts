@@ -62,6 +62,7 @@ const dataReducer = createSlice({
       state.tags[idx] = action.payload;
     },
     addTodoMenu(state, action: PayloadAction<ListItem>) {
+      db.todoMenu.insert(action.payload);
       state.todoMenu.push(action.payload);
     },
     deleteTodoMenu(
@@ -84,6 +85,18 @@ const dataReducer = createSlice({
       ) {
         state.todoMenu[action.payload.realItemIndexes[i]].order -= 1;
       }
+      db.todoMenu.update(
+        {
+          parent: state.todoMenu[idx].parent,
+          order: { $gt: state.todoMenu[idx].order },
+        },
+        {
+          $set: { order: (val: number) => val - 1 },
+        },
+        {
+          multi: true,
+        }
+      );
       state.todoMenu.splice(idx, 1);
     },
     editTodoMenu(
@@ -99,6 +112,10 @@ const dataReducer = createSlice({
       );
       if (action.payload.listItem.folder) {
         // The current method is used to edit folders and edit items. Skip order adjustment when editing a folder
+        db.todoMenu.update(
+          { id: action.payload.listItem.id },
+          action.payload.listItem
+        );
         state.todoMenu[idx] = action.payload.listItem;
         return;
       }
@@ -115,6 +132,18 @@ const dataReducer = createSlice({
           ) {
             state.todoMenu[action.payload.realSubItemIndexes[i]].order -= 1;
           }
+          db.todoMenu.update(
+            {
+              parent: state.todoMenu[idx].parent,
+              order: { $gt: state.todoMenu[idx].order },
+            },
+            {
+              $set: { order: (val: number) => val - 1 },
+            },
+            {
+              multi: true,
+            }
+          );
         } else {
           const workingIndex = action.payload.realRootItemIndexes.findIndex(
             (item) => item === idx
@@ -126,11 +155,28 @@ const dataReducer = createSlice({
           ) {
             state.todoMenu[action.payload.realRootItemIndexes[i]].order -= 1;
           }
+          db.todoMenu.update(
+            {
+              parent: '',
+              order: { $gt: state.todoMenu[idx].order },
+            },
+            {
+              $set: { order: (val: number) => val - 1 },
+            },
+            {
+              multi: true,
+            }
+          );
         }
       }
+      db.todoMenu.update(
+        { id: action.payload.listItem.id },
+        action.payload.listItem
+      );
       state.todoMenu[idx] = action.payload.listItem;
     },
     addTodoMenuFolder(state, action: PayloadAction<ListItem>) {
+      db.todoMenu.insert(action.payload);
       state.todoMenu.push(action.payload);
     },
     breakTodoMenuFolder(
@@ -141,11 +187,19 @@ const dataReducer = createSlice({
         realRootItemIndexes: number[];
       }>
     ) {
+      // Represents the index of the folder item in the store
       const index = state.todoMenu.findIndex(
         (item) => item.id === action.payload.itemId
       );
+      // Represents the order nubmer of the deleting folder item among the folders located in the root directory
       const workingIndex = action.payload.realRootItemIndexes.findIndex(
         (item) => item === index
+      );
+      // Subtract the order of all folders after the current folder by one
+      db.todoMenu.update(
+        { parent: '', order: { $gt: state.todoMenu[index].order } },
+        { $set: { order: (val: number) => val - 1 } },
+        { multi: true }
       );
       for (
         let i = workingIndex + 1;
@@ -154,6 +208,7 @@ const dataReducer = createSlice({
       ) {
         state.todoMenu[action.payload.realRootItemIndexes[i]].order -= 1;
       }
+      //
       action.payload.realSubItemIndexes.forEach((val, idx) => {
         state.todoMenu[val] = {
           ...state.todoMenu[val],
@@ -162,6 +217,18 @@ const dataReducer = createSlice({
           order: action.payload.realRootItemIndexes.length + idx - 1,
         };
       });
+      db.todoMenu.update(
+        { parent: state.todoMenu[index].id },
+        {
+          $set: {
+            parent: '',
+            order: (val: number, idx: number) =>
+              action.payload.realRootItemIndexes.length + idx - 1,
+          },
+        },
+        { multi: true }
+      );
+      db.todoMenu.remove({ id: state.todoMenu[index].id });
       state.todoMenu.splice(index, 1);
     },
     loadTag(state, action: PayloadAction<TagItem[]>) {
