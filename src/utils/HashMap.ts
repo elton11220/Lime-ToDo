@@ -31,8 +31,8 @@ class HashMap<T = any> {
     this.table = {};
   }
   getHashCode(key: any): number {
-    if (typeof key === 'number') {
-      return key;
+    if (Number(key).toString() !== 'NaN') {
+      return Number.parseFloat(key);
     }
     const tableKey = this.toStrFn(key);
     let hash = 0;
