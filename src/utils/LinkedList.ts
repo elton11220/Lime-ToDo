@@ -57,6 +57,15 @@ class LinkedList<T> {
     }
     return `[${str}]`;
   }
+  toArray(): T[] {
+    const array = new Array<T>();
+    let currentNode = this.head;
+    for (let i = 0; i < this.#count && currentNode !== null; i += 1) {
+      array.push(currentNode.element);
+      currentNode = currentNode.next;
+    }
+    return array;
+  }
   indexOf(element: T): number {
     let currentNode = this.head;
     for (let i = 0; i < this.#count && currentNode !== null; i += 1) {
@@ -145,6 +154,15 @@ class LinkedList<T> {
       currentNode = currentNode.next;
     }
     return linkedList;
+  }
+  mapToArray<P>(callback: (value: T, index: number) => P): P[] {
+    const array = new Array<P>();
+    let currentNode = this.head;
+    for (let i = 0; i < this.#count && currentNode !== null; i += 1) {
+      array.push(callback(currentNode.element, i));
+      currentNode = currentNode.next;
+    }
+    return array;
   }
   forEach(callback: (value: T, index: number) => void): void {
     let currentNode = this.head;
