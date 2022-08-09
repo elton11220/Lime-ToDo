@@ -9,15 +9,17 @@ const orderFn: (a: TodoItem, b: TodoItem) => Compare = (a, b) => {
 };
 
 const getTodoItemsMap: (
-  todos: TodoItem[]
-) => HashMap<SortedLinkedList<TodoItem>> = (todos) => {
+  todoItems: TodoItem[]
+) => HashMap<SortedLinkedList<TodoItem>> = (todoItems) => {
   const hashMap = new HashMap<SortedLinkedList<TodoItem>>();
-  todos.forEach((val: TodoItem) => {
+  todoItems.forEach((val: TodoItem) => {
     if (hashMap.has(val.parent)) {
       const linkedList = hashMap.get(val.parent) as SortedLinkedList<TodoItem>;
       linkedList.insert(val);
     } else {
-      hashMap.put(val.parent, new SortedLinkedList<TodoItem>(orderFn));
+      const newLinkedList = new SortedLinkedList<TodoItem>(orderFn);
+      newLinkedList.insert(val);
+      hashMap.put(val.parent, newLinkedList);
     }
   });
   return hashMap;
