@@ -8,7 +8,7 @@ interface InitialState {
   todoMenu: ListItem[];
   tags: TagItem[];
   colors: string[];
-  todos: TodoItem[];
+  todoItems: TodoItem[];
 }
 
 const initialState: InitialState = {
@@ -32,7 +32,7 @@ const initialState: InitialState = {
   ],
   todoMenu: [],
   tags: [],
-  todos: [],
+  todoItems: [],
 };
 
 const dataReducer = createSlice({
@@ -237,6 +237,9 @@ const dataReducer = createSlice({
     loadTodoMenu(state, action: PayloadAction<ListItem[]>) {
       state.todoMenu = action.payload;
     },
+    loadTodoItem(state, action: PayloadAction<TodoItem[]>) {
+      state.todoItems = action.payload;
+    },
   },
 });
 
@@ -244,6 +247,7 @@ export default dataReducer.reducer;
 export const {
   loadTag,
   loadTodoMenu,
+  loadTodoItem,
   deleteTag,
   addTag,
   editTag,

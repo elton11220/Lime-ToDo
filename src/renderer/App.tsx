@@ -5,7 +5,7 @@ import './App.css';
 import Todos from './views/todos';
 import Window from './views/Window';
 import store from './redux';
-import { loadTag, loadTodoMenu } from './redux/slice/dataReducer';
+import { loadTag, loadTodoItem, loadTodoMenu } from './redux/slice/dataReducer';
 import 'tdesign-react/es/style/index.css';
 import db from './utils/db';
 
@@ -19,6 +19,11 @@ export default function App() {
     db.todoMenu.find({}, (err: any, res: ListItem[]) => {
       if (res.length > 0) {
         store.dispatch(loadTodoMenu(res));
+      }
+    });
+    db.todoItem.find({}, (err: any, res: TodoItem[]) => {
+      if (res.length > 0) {
+        store.dispatch(loadTodoItem(res));
       }
     });
   }, []);
