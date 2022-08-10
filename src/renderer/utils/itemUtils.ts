@@ -25,5 +25,11 @@ const getTodoItemsMap: (
   return hashMap;
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { getTodoItemsMap };
+enum TodoItemPriority {
+  none = 0,
+  low = 1,
+  medium = 2,
+  high = 3,
+}
+
+export { getTodoItemsMap, TodoItemPriority };

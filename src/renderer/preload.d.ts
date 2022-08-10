@@ -1,4 +1,5 @@
 import { Channels } from 'main/preload';
+import { TodoItemPriority } from './utils/itemUtils';
 
 declare global {
   interface Window {
@@ -56,7 +57,7 @@ declare global {
     parent: string;
     order: number;
     finish: boolean;
-    priority: number;
+    priority: TodoItemPriority;
     data: {
       title: string;
       note: string;
