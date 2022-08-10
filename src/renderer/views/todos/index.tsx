@@ -15,6 +15,7 @@ import {
 
 import ToDoList from 'renderer/components/ToDoList';
 import { getTodoItemsMap } from 'renderer/utils/itemUtils';
+import { flatToMap } from 'renderer/utils/menuUtils';
 import styles from './style.module.scss';
 import TodoContext from './context';
 
@@ -31,6 +32,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('collection');
   const { todoMenu, tags, colors, todoItems } = props;
   const todoItemsMap = useMemo(() => getTodoItemsMap(todoItems), [todoItems]);
+  const todoMenuMap = useMemo(() => flatToMap(todoMenu), [todoMenu]);
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
@@ -143,6 +145,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
         <TodoContext.Provider
           value={{
             todoMenuTitles,
+            todoMenuMap,
             tagTitles,
             listTitles,
             active,
