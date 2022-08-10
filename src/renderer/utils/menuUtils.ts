@@ -123,8 +123,15 @@ const getNextOrder: {
   return data.length;
 };
 
+const flatToMap: (data: Array<ListItem>) => Map<string, ListItem> = (data) => {
+  const map = new Map<string, ListItem>();
+  data.forEach((value: ListItem) => map.set(value.id, value));
+  return map;
+};
+
 export {
   flatToTree,
+  flatToMap,
   getNextOrder,
   getSortedRootItemIndexes,
   getSortedSubItemIndexes,
