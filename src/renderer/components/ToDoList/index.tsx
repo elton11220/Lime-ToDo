@@ -3,19 +3,29 @@ import TodoContext from 'renderer/views/todos/context';
 import { EllipsisIcon, MenuUnfoldIcon } from 'tdesign-icons-react';
 import { Space } from 'tdesign-react';
 import { SortedLinkedList } from 'utils/LinkedList';
+import { connect, ConnectedProps } from 'react-redux';
 import NewTaskInput from '../NewTaskInput';
 import emptyTaskAnimation from '../../animations/empty-task.json';
 
 import styles from './style.module.scss';
 import Lottie from '../Lottie';
+import ToDoItem from '../ToDoItem';
 
-interface ToDoListProps {
+const connector = connect((state: any) => ({
+  todoMenu: state.dataReducer.todoMenu,
+  colors: state.dataReducer.colors,
+}));
+
+type ConnectorType = ConnectedProps<typeof connector>;
+
+interface ToDoListProps extends ConnectorType {
   title: string;
 }
 
 const ToDoList: React.FC<ToDoListProps> = (props) => {
-  const { active, tagTitles, todoItemsMap } = useContext(TodoContext);
-  const { title } = props;
+  const { active, tagTitles, todoItemsMap, todoMenuMap } =
+    useContext(TodoContext);
+  const { title, colors } = props;
   const newTaskInputPlaceholder = useMemo<string>(() => {
     if (active === 'today' || active === 'recent') {
       return '添加“今天”的任务至“收集箱”';
@@ -26,6 +36,8 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
     const isTag = tagTitles.has(active);
     return isTag ? `#${title}` : `添加任务至“${title}”，回车即可创建`;
   }, [active, tagTitles, title]);
+  // Computed the target id of different cases.
+  // Only the ID of the toDo menu item will be returned in the form of itself, and the rest will be returned as 'collection'
   const defaultTargetId = useMemo<string>(() => {
     if (
       active === 'recent' ||
@@ -37,11 +49,28 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
     }
     return active;
   }, [active, tagTitles]);
+  // The id of the target list where the new task will be inserted
   const [newTaskTargetId, setNewTaskTargetId] = useState(defaultTargetId);
   useEffect(() => {
     setNewTaskTargetId(defaultTargetId);
   }, [defaultTargetId]);
+  // 'today', 'recent', 'finish', 'trash' are lists obtained by computed, and only todo menus and 'collection' are mapped to their sub items
   const todoItems = useMemo<SortedLinkedList<TodoItem>>(() => {
+    if (active === 'today') {
+      //
+    }
+    if (active === 'recent') {
+      //
+    }
+    if (active === 'collection') {
+      //
+    }
+    if (active === 'finish') {
+      //
+    }
+    if (active === 'trash') {
+      //
+    }
     const list = todoItemsMap.get(active);
     if (list !== null) {
       return list;
@@ -69,7 +98,16 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
       ) : null}
       {todoItems.length > 0 ? (
         <div className={styles.todoItems}>
-          <div>placeholder</div>
+          {todoItems.mapToArray((todoItem: TodoItem) => (
+            <ToDoItem
+              key={todoItem.id}
+              initialValue={todoItem}
+              sideColor={
+                colors[(todoMenuMap.get(todoItem.parent) as ListItem)?.color] ??
+                'transparent'
+              }
+            />
+          ))}
         </div>
       ) : (
         <div className={styles.emptyContainer}>
@@ -86,4 +124,4 @@ const ToDoList: React.FC<ToDoListProps> = (props) => {
   );
 };
 
-export default ToDoList;
+export default connector(ToDoList);
