@@ -123,9 +123,13 @@ const getNextOrder: {
   return data.length;
 };
 
-const flatToMap: (data: Array<ListItem>) => Map<string, ListItem> = (data) => {
-  const map = new Map<string, ListItem>();
-  data.forEach((value: ListItem) => map.set(value.id, value));
+const flatToMap: <T extends Item>(data: Array<T>) => Map<string, T> = <
+  T extends Item
+>(
+  data: Array<T>
+) => {
+  const map = new Map<string, T>();
+  data.forEach((value: T) => map.set(value.id, value));
   return map;
 };
 

@@ -32,7 +32,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const [active, setActive] = useState('collection');
   const { todoMenu, tags, colors, todoItems } = props;
   const todoItemsMap = useMemo(() => getTodoItemsMap(todoItems), [todoItems]);
-  const todoMenuMap = useMemo(() => flatToMap(todoMenu), [todoMenu]);
+  const todoMenuMap = useMemo(() => flatToMap<ListItem>(todoMenu), [todoMenu]);
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
