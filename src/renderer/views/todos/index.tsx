@@ -33,6 +33,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
   const { todoMenu, tags, colors, todoItems } = props;
   const todoItemsMap = useMemo(() => getTodoItemsMap(todoItems), [todoItems]);
   const todoMenuMap = useMemo(() => flatToMap<ListItem>(todoMenu), [todoMenu]);
+  const tagMap = useMemo(() => flatToMap<TagItem>(tags), [tags]);
   const todoMenuTitles = useMemo(() => {
     const map = new Map<string, string>();
     todoMenu.forEach((val: ListItem) => {
@@ -146,6 +147,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           value={{
             todoMenuTitles,
             todoMenuMap,
+            tagMap,
             tagTitles,
             listTitles,
             active,
