@@ -1,5 +1,5 @@
-import { createElement, FC, useMemo, useState } from 'react';
-import type { ChangeEvent } from 'react';
+import { createElement, useMemo, useState } from 'react';
+import type { ChangeEvent, FC } from 'react';
 import { CheckIcon } from 'tdesign-icons-react';
 import { TodoItemPriority } from 'renderer/utils/itemUtils';
 
@@ -8,13 +8,13 @@ import styles from './style.module.scss';
 interface CheckInputBoxProps {
   priority?: TodoItemPriority;
   checked: boolean;
-  onChange: (checked: boolean) => void;
-  initialValue: string;
+  value: string;
+  onChangeChecked: (checked: boolean) => void;
+  onChangeValue: (value: string) => void;
 }
 
 const CheckInputBox: FC<CheckInputBoxProps> = (props) => {
-  const { priority, checked, initialValue, onChange } = props;
-  const [value, setValue] = useState(initialValue);
+  const { priority, checked, value, onChangeChecked, onChangeValue } = props;
   const priorityColor = useMemo(() => {
     if (priority === TodoItemPriority.none) {
       return 'var(--td-component-border)';
@@ -32,9 +32,9 @@ const CheckInputBox: FC<CheckInputBoxProps> = (props) => {
   }, [priority]);
   const triggerChange = () => {
     if (checked) {
-      onChange(false);
+      onChangeChecked(false);
     } else {
-      onChange(true);
+      onChangeChecked(true);
     }
   };
   return (
@@ -63,7 +63,15 @@ const CheckInputBox: FC<CheckInputBoxProps> = (props) => {
         type="text"
         value={value}
         onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value);
+          onChangeValue(e.target.value);
+        }}
+        disabled={checked}
+        spellCheck={false}
+        style={{
+          textDecoration: checked ? 'line-through' : 'none',
+          color: checked
+            ? 'var(--td-component-border)'
+            : 'var(--td-text-color-primary)',
         }}
       />
     </div>

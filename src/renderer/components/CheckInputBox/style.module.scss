@@ -25,9 +25,6 @@
       &:hover {
         background-color: var(--bgColor);
       }
-      &.active {
-
-      }
     }
   }
   .inputBox {
@@ -38,7 +35,6 @@
     font-size: 14px;
     border: none;
     outline: none;
-    color: var(--td-text-color-primary);
     background-color: transparent;
   }
 }
