@@ -1,61 +1,36 @@
-import { Channels } from 'main/preload';
 import { TodoItemPriority } from './utils/itemUtils';
 
 declare global {
-  interface Window {
-    electron: {
-      ipcRenderer: {
-        sendMessage(channel: Channels, args: unknown[] | unknown): void;
-        on(
-          channel: string,
-          func: (...args: unknown[]) => void
-        ): (() => void) | undefined;
-        once(channel: string, func: (...args: unknown[]) => void): void;
-      };
-      minimize: () => void;
-      maximize: () => void;
-      unmaximize: () => void;
-      close: () => void;
-    };
-  }
-  interface ListItem {
+  interface Item {
     id: string;
+    order: number;
+  }
+  interface ListItem extends Item {
     title: string;
     folder: boolean;
     parent: string;
     color: number;
-    order: number;
   }
-  interface TagItem {
-    id: string;
+  interface TagItem extends Item {
     title: string;
     color: number;
-    order: number;
   }
-  interface RenderListItem {
-    id: string;
+  interface RenderListItem extends Item {
     title: string;
     folder: false;
     color: number;
-    order: number;
   }
-  interface RenderListItemFolder {
-    id: string;
+  interface RenderListItemFolder extends Item {
     title: string;
     folder: true;
     children: Array<RenderListItem>;
-    order: number;
   }
-  interface TodoStep {
-    id: string;
+  interface TodoStep extends Item {
     finish: boolean;
     title: string;
-    order: number;
   }
-  interface TodoItem {
-    id: string;
+  interface TodoItem extends Item {
     parent: string;
-    order: number;
     finish: boolean;
     priority: TodoItemPriority;
     data: {
