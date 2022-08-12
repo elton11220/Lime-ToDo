@@ -41,7 +41,9 @@ const CheckInputBox: FC<CheckInputBoxProps> = (props) => {
     <div className={styles.container}>
       <div
         className={styles.checkBox}
-        style={{ borderColor: priorityColor }}
+        style={{
+          borderColor: checked ? 'var(--td-component-border)' : priorityColor,
+        }}
         onClick={triggerChange}
       >
         {createElement(
@@ -50,7 +52,7 @@ const CheckInputBox: FC<CheckInputBoxProps> = (props) => {
             className: styles.state,
             style: {
               '--bgColor': `${priorityColor}20`,
-              backgroundColor: checked ? priorityColor : null,
+              backgroundColor: checked ? 'var(--td-component-border)' : null,
             },
           },
           checked ? (
