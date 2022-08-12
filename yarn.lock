@@ -8639,14 +8639,6 @@ tar@^6.0.5, tar@^6.1.11, tar@^6.1.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-tdesign-icons-react@^0.1.2:
-  version "0.1.4"
-  resolved "https://registry.npmmirror.com/tdesign-icons-react/-/tdesign-icons-react-0.1.4.tgz#75fdf45a6ecebb283e31fcb997ee07c1b7525036"
-  integrity sha512-5ZYj6qF6o1mjeSUygSBqTOZBNnwt0rFCFdqlcTuq6brxEnKWVpef9ms4rOVE48EUrk2icOYUiPHR/DH3gZWpfg==
-  dependencies:
-    "@babel/runtime" "^7.16.5"
-    classnames "^2.2.6"
-
 tdesign-icons-react@^0.1.5:
   version "0.1.5"
   resolved "https://registry.npmjs.org/tdesign-icons-react/-/tdesign-icons-react-0.1.5.tgz#805a0b20e4f800efd4afab669f110463d31d82a8"
@@ -8655,10 +8647,10 @@ tdesign-icons-react@^0.1.5:
     "@babel/runtime" "^7.16.5"
     classnames "^2.2.6"
 
-tdesign-react@^0.38.0:
-  version "0.38.0"
-  resolved "https://registry.npmmirror.com/tdesign-react/-/tdesign-react-0.38.0.tgz#9a596d9dd278e38197b024da43a31763dda8476a"
-  integrity sha512-u4lDmw8B+8qTqMQr730seJ/uJiDN9Nu0+9wFfdCFrGZEbYsva7hMenEDgKBZxNotebqrPraru1MafJBYBjEdyw==
+tdesign-react@^0.39.0:
+  version "0.39.0"
+  resolved "https://registry.npmjs.org/tdesign-react/-/tdesign-react-0.39.0.tgz#153e1330f960c41d9f7ccda8b49c87a5ace15dee"
+  integrity sha512-V19lG7jbeapUtNdmgTF+t4689nSToUclxcCYw7bQkrlJAsd5VgxLE01MQQlzQ89prSPimC2IVMf/x8jGQfjLvA==
   dependencies:
     "@babel/runtime" "~7.17.2"
     "@popperjs/core" "~2.11.2"
@@ -8673,7 +8665,7 @@ tdesign-react@^0.38.0:
     react-popper "~2.2.5"
     react-transition-group "~4.4.1"
     sortablejs "^1.15.0"
-    tdesign-icons-react "^0.1.2"
+    tdesign-icons-react "^0.1.5"
     tinycolor2 "^1.4.2"
     tslib "~2.3.1"
     use-resize-observer "^9.0.2"
