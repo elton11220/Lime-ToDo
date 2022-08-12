@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import type { FC } from 'react';
 
 import CheckInputBox from '../CheckInputBox';
@@ -7,23 +7,27 @@ import styles from './style.module.scss';
 interface ToDoItemProps {
   sideColor?: string;
   initialValue: TodoItem;
-  readonly?: boolean;
-  finish?: boolean;
 }
 
 const ToDoItem: FC<ToDoItemProps> = (props) => {
-  const { sideColor, initialValue, readonly, finish } = props;
-  const [checked, setChecked] = useState(false);
+  const { sideColor, initialValue } = props;
+  const [value, setValue] = useState(initialValue);
   return (
     <div className={styles.container} style={{ borderLeftColor: sideColor }}>
       <div className={styles.main}>
         <CheckInputBox
-          initialValue="初始值"
-          checked={checked}
-          onChange={(check) => {
-            setChecked(check);
+          value={value.data.title}
+          checked={value.finish}
+          onChangeChecked={(check) => {
+            setValue((state) => ({ ...state, finish: check }));
           }}
-          priority={initialValue.priority}
+          onChangeValue={(val) => {
+            setValue((state) => ({
+              ...state,
+              data: { ...state.data, title: val },
+            }));
+          }}
+          priority={value.priority}
         />
       </div>
       <div className={styles.detail}>
@@ -37,8 +41,6 @@ const ToDoItem: FC<ToDoItemProps> = (props) => {
 
 ToDoItem.defaultProps = {
   sideColor: 'transparent',
-  readonly: false,
-  finish: false,
 };
 
 export default memo(ToDoItem);
