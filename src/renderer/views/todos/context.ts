@@ -24,4 +24,6 @@ const TodoContext = createContext<TodoContextType>({
   colors: [],
 });
 
+TodoContext.displayName = 'TodoContext';
+
 export default TodoContext;
