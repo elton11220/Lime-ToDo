@@ -140,6 +140,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
           onDeleteTodoMenuItem={deleteTodoMenuItem}
           onAddTodoMenuItemFolder={addToDoMenuItemFolder}
           onBreakTodoMenuItemFolder={breakToDoMenuItemFolder}
+          todoItemsMap={todoItemsMap}
         />
       </Aside>
       <Content className={styles.content}>
@@ -151,7 +152,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
             tagTitles,
             listTitles,
             active,
-            todoItemsMap,
+            todoItemsMap: todoItemsMap.itemsMap,
             colors,
           }}
         >

@@ -19,6 +19,8 @@ import {
 import useTitleBarAreaRect from 'renderer/hooks/useTitleBarAreaRect';
 import { flatToTree, getNextOrder } from 'renderer/utils/menuUtils';
 import useIpcRendererListener from 'renderer/hooks/useIpcRendererListener';
+import type { SortedLinkedList } from 'utils/LinkedList';
+import type HashMap from 'utils/HashMap';
 import styles from './style.module.scss';
 import ColorPicker from '../ColorPicker';
 import HrDivider from '../HrDivider';
@@ -49,6 +51,10 @@ interface ToDoMenuProps {
   ) => void;
   onAddTagItem: (item: TagItem) => void;
   onEditTagItem: (item: TagItem) => void;
+  todoItemsMap: {
+    itemsMap: HashMap<SortedLinkedList<TodoItem>>;
+    tagCountMap: Map<string, number>;
+  };
 }
 
 const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
@@ -66,6 +72,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
     onBreakTodoMenuItemFolder,
     onAddTagItem,
     onEditTagItem,
+    todoItemsMap,
   } = props;
   const todoMenu = useMemo(() => flatToTree(menu), [menu]);
   const sortedTags = useMemo(
@@ -723,7 +730,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                                 : 'var(--td-text-color-primary)',
                           }}
                         >
-                          0
+                          {todoItemsMap.itemsMap.get(item.id)?.length ?? 0}
                         </div>
                       </div>
                     </div>
@@ -775,7 +782,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                               : 'var(--td-text-color-primary)',
                         }}
                       >
-                        0
+                        {todoItemsMap.itemsMap.get(child.id)?.length ?? 0}
                       </div>
                     </div>
                   </div>
@@ -883,7 +890,7 @@ const ToDoMenu: React.FC<ToDoMenuProps> = (props) => {
                             : 'var(--td-text-color-primary)',
                       }}
                     >
-                      0
+                      {todoItemsMap.tagCountMap.get(item.id) ?? 0}
                     </div>
                   </div>
                 </div>
