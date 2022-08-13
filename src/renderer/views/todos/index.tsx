@@ -152,6 +152,7 @@ const Todos: React.FC<ConnectedProps<typeof connector>> = (props) => {
             listTitles,
             active,
             todoItemsMap,
+            colors,
           }}
         >
           <ToDoList title={todoListTitle} />

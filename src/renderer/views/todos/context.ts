@@ -10,6 +10,7 @@ interface TodoContextType {
   listTitles: Map<string, string>;
   active: string;
   todoItemsMap: HashMap<SortedLinkedList<TodoItem>>;
+  colors: string[];
 }
 
 const TodoContext = createContext<TodoContextType>({
@@ -20,6 +21,7 @@ const TodoContext = createContext<TodoContextType>({
   listTitles: new Map(),
   active: 'collection',
   todoItemsMap: new HashMap<SortedLinkedList<TodoItem>>(),
+  colors: [],
 });
 
 export default TodoContext;
