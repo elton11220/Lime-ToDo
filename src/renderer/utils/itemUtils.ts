@@ -8,21 +8,34 @@ const orderFn: (a: TodoItem, b: TodoItem) => Compare = (a, b) => {
   return a.order < b.order ? Compare.LESS_THAN : Compare.BIGGER_THAN;
 };
 
-const getTodoItemsMap: (
-  todoItems: TodoItem[]
-) => HashMap<SortedLinkedList<TodoItem>> = (todoItems) => {
-  const hashMap = new HashMap<SortedLinkedList<TodoItem>>();
+const getTodoItemsMap: (todoItems: TodoItem[]) => {
+  itemsMap: HashMap<SortedLinkedList<TodoItem>>;
+  tagCountMap: Map<string, number>;
+} = (todoItems) => {
+  const itemsMap = new HashMap<SortedLinkedList<TodoItem>>();
+  const tagCountMap = new Map<string, number>();
   todoItems.forEach((val: TodoItem) => {
-    if (hashMap.has(val.parent)) {
-      const linkedList = hashMap.get(val.parent) as SortedLinkedList<TodoItem>;
+    if (itemsMap.has(val.parent)) {
+      const linkedList = itemsMap.get(val.parent) as SortedLinkedList<TodoItem>;
       linkedList.insert(val);
     } else {
       const newLinkedList = new SortedLinkedList<TodoItem>(orderFn);
       newLinkedList.insert(val);
-      hashMap.put(val.parent, newLinkedList);
+      itemsMap.put(val.parent, newLinkedList);
     }
+    val.data.tags.forEach((tagId: string) => {
+      const previousCount = tagCountMap.get(tagId);
+      if (typeof previousCount === 'number') {
+        tagCountMap.set(tagId, previousCount + 1);
+      } else {
+        tagCountMap.set(tagId, 1);
+      }
+    });
   });
-  return hashMap;
+  return {
+    itemsMap,
+    tagCountMap,
+  };
 };
 
 enum TodoItemPriority {
